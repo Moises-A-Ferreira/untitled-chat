@@ -1,0 +1,296 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "nome": "Teste FileDB",
+      "email": "filedb@example.com",
+      "telefone": "11999999999",
+      "password_hash": "$2a$10$2Ftctgxlk6bLpOXrliP6QeFjM6GqbPnpnAyOOjODGAQJc3fRlzbCS",
+      "role": "admin",
+      "created_at": "2026-01-20T17:39:34.873Z"
+    },
+    {
+      "id": 2,
+      "nome": "Moisés Alliano Ferreira",
+      "email": "moi.sm@outlook.com",
+      "telefone": "14991201269",
+      "password_hash": "$2a$10$gVLEtQhYV5cOzi1/CnXAqO9zuc4HyncK.uvKfphTtY6lHzDcR4IuC",
+      "created_at": "2026-01-20T18:10:30.939Z"
+    },
+    {
+      "id": 3,
+      "nome": "Murilo Martins",
+      "email": "murilo.martins@logam.com",
+      "telefone": "14991201269",
+      "password_hash": "$2a$10$1x7bHZcnt9PL9.xzN/owCOVb/rA.CIl5lgWXOlGg8vAf0iLXpQ/p.",
+      "role": "user",
+      "created_at": "2026-01-21T13:29:31.471Z"
+    },
+    {
+      "id": 4,
+      "nome": "Paulo Panelli",
+      "email": "paulo.paneli@logam.com",
+      "telefone": "14991201269",
+      "password_hash": "$2a$10$HxLXzvq1.roDbrVq0FU8R.ZOqo/3yVhtLCy7f1Q51/r7rOCCa02Mm",
+      "role": "user",
+      "created_at": "2026-01-21T13:42:15.548Z"
+    },
+    {
+      "id": 5,
+      "nome": "Moisés Ferreira",
+      "email": "moi.sm@outlook.com",
+      "telefone": "54910636811",
+      "password_hash": "$2a$10$nB6C82uA/az2lPZy6tTGpOtn5WxpinRAdPs8j7xpCSXN80EMRYJXO",
+      "role": "user",
+      "created_at": "2026-01-22T01:05:11.780Z",
+      "contato_info": {
+        "tipo": "email",
+        "valor": "moi.sm@outlook.com",
+        "telefone": null,
+        "email": "moi.sm@outlook.com"
+      }
+    }
+  ],
+  "sessions": [
+    {
+      "token": "1468b5d9-aeb0-4ba3-96f3-85395ca63987",
+      "user_id": 2,
+      "created_at": "2026-01-20T18:10:36.822Z",
+      "expires_at": "2026-01-21T18:10:36.822Z"
+    },
+    {
+      "token": "20ac9f55-12e0-48ce-8824-20755bd0bd6c",
+      "user_id": 2,
+      "created_at": "2026-01-21T12:22:09.097Z",
+      "expires_at": "2026-01-22T12:22:09.097Z"
+    },
+    {
+      "token": "87d35ef4-3098-4699-844d-8f39f24e7acd",
+      "user_id": 3,
+      "created_at": "2026-01-21T13:29:39.661Z",
+      "expires_at": "2026-01-22T13:29:39.661Z"
+    },
+    {
+      "token": "c69899d3-f2ca-43c0-befb-97dc110a3b57",
+      "user_id": 3,
+      "created_at": "2026-01-21T13:30:11.277Z",
+      "expires_at": "2026-01-22T13:30:11.277Z"
+    },
+    {
+      "token": "e56e8eb9-4641-4f4e-9e39-6dbdf168b59a",
+      "user_id": 4,
+      "created_at": "2026-01-21T13:42:23.849Z",
+      "expires_at": "2026-01-22T13:42:23.849Z"
+    },
+    {
+      "token": "84ab6c64-cfa8-4768-93ba-d8efbe13f748",
+      "user_id": 2,
+      "created_at": "2026-01-21T18:41:24.070Z",
+      "expires_at": "2026-01-22T18:41:24.070Z"
+    },
+    {
+      "token": "a1ac0ad7-7472-4934-bdd7-e96688a8981a",
+      "user_id": 2,
+      "created_at": "2026-01-21T18:50:38.060Z",
+      "expires_at": "2026-01-22T18:50:38.060Z"
+    },
+    {
+      "token": "8c75d409-2918-42db-844c-ce569a98597d",
+      "user_id": 2,
+      "created_at": "2026-01-21T18:57:36.565Z",
+      "expires_at": "2026-01-22T18:57:36.565Z"
+    },
+    {
+      "token": "f0d9cc7f-ad46-455c-9fe2-f61ed91880d8",
+      "user_id": 2,
+      "created_at": "2026-01-21T18:58:09.160Z",
+      "expires_at": "2026-01-22T18:58:09.160Z"
+    },
+    {
+      "token": "9a559a3b-deba-44e0-b1f3-72ba3644a8a8",
+      "user_id": 2,
+      "created_at": "2026-01-21T18:59:21.043Z",
+      "expires_at": "2026-01-22T18:59:21.043Z"
+    },
+    {
+      "token": "54619dde-44c7-4141-8e7c-52146a6dd876",
+      "user_id": 2,
+      "created_at": "2026-01-21T19:03:05.729Z",
+      "expires_at": "2026-01-22T19:03:05.729Z"
+    },
+    {
+      "token": "6646c9d5-74db-45d9-b1fc-13ef29423e09",
+      "user_id": 2,
+      "created_at": "2026-01-21T21:45:37.893Z",
+      "expires_at": "2026-01-22T21:45:37.893Z"
+    },
+    {
+      "token": "be05d017-52e1-43aa-ac35-d35d4536d431",
+      "user_id": 2,
+      "created_at": "2026-01-21T21:53:58.050Z",
+      "expires_at": "2026-01-22T21:53:58.050Z"
+    },
+    {
+      "token": "27fc4478-89ac-4087-9d5d-2eba8c1f8d30",
+      "user_id": 2,
+      "created_at": "2026-01-21T22:08:07.796Z",
+      "expires_at": "2026-01-22T22:08:07.796Z"
+    },
+    {
+      "token": "866b7168-298c-4d71-8b80-000c5f6c4436",
+      "user_id": 2,
+      "created_at": "2026-01-22T00:53:58.058Z",
+      "expires_at": "2026-01-23T00:53:58.058Z"
+    },
+    {
+      "token": "bf6aefa3-89db-4b82-99c3-1fb9ffea02cf",
+      "user_id": 5,
+      "created_at": "2026-01-22T01:09:22.987Z",
+      "expires_at": "2026-01-23T01:09:22.987Z"
+    },
+    {
+      "token": "64eb2cc2-8f78-40f3-8528-0d84397c8fff",
+      "user_id": 5,
+      "created_at": "2026-01-22T01:12:09.760Z",
+      "expires_at": "2026-01-23T01:12:09.760Z"
+    },
+    {
+      "token": "b301afea-ad08-467f-8a17-68b8bd02e5de",
+      "user_id": 5,
+      "created_at": "2026-01-22T01:26:45.691Z",
+      "expires_at": "2026-01-23T01:26:45.691Z"
+    },
+    {
+      "token": "2508bfd3-09eb-4710-83b1-ec4793ad9c52",
+      "user_id": 5,
+      "created_at": "2026-01-22T01:29:12.199Z",
+      "expires_at": "2026-01-23T01:29:12.199Z"
+    },
+    {
+      "token": "0da02178-8d2b-49eb-aae9-715e46c8e42f",
+      "user_id": 5,
+      "created_at": "2026-01-22T11:29:47.682Z",
+      "expires_at": "2026-01-23T11:29:47.682Z"
+    },
+    {
+      "token": "f658318e-6acd-4424-bb71-f3b47d7860af",
+      "user_id": 5,
+      "created_at": "2026-01-22T11:34:52.632Z",
+      "expires_at": "2026-01-23T11:34:52.632Z"
+    },
+    {
+      "token": "d1b65844-09e6-4cbd-8cda-ff81a171316f",
+      "user_id": 5,
+      "created_at": "2026-01-22T11:53:52.896Z",
+      "expires_at": "2026-01-23T11:53:52.896Z"
+    }
+  ],
+  "ocorrencias": [
+    {
+      "id": 1,
+      "user_id": 2,
+      "tipo": "calcada",
+      "descricao": "Calçada do vizinho sem condições de andar na mesma",
+      "latitude": -22.7219,
+      "longitude": -48.5715,
+      "status": "fechado",
+      "created_at": "2026-01-20T18:11:16.275Z",
+      "updated_at": "2026-01-21T21:48:32.825Z"
+    },
+    {
+      "id": 2,
+      "user_id": 2,
+      "tipo": "buraco",
+      "descricao": "Buraco perigoso na Rua Principal próximo à praça central",
+      "latitude": -22.7235,
+      "longitude": -48.5728,
+      "status": "fechado",
+      "created_at": "2026-01-21T09:30:00.000Z",
+      "updated_at": "2026-01-21T13:25:10.044Z"
+    },
+    {
+      "id": 3,
+      "user_id": 1,
+      "tipo": "iluminacao",
+      "descricao": "Poste de luz apagado há mais de uma semana na Av. Brasil",
+      "latitude": -22.7201,
+      "longitude": -48.5692,
+      "status": "fechado",
+      "created_at": "2026-01-21T11:15:00.000Z",
+      "updated_at": "2026-01-21T13:22:37.901Z"
+    },
+    {
+      "id": 4,
+      "user_id": 1,
+      "tipo": "lixo",
+      "descricao": "Acúmulo de entulho irregular próximo ao mercado municipal",
+      "latitude": -22.7252,
+      "longitude": -48.5741,
+      "status": "fechado",
+      "created_at": "2026-01-20T14:20:00.000Z",
+      "updated_at": "2026-01-21T21:48:18.270Z"
+    },
+    {
+      "id": 5,
+      "user_id": 3,
+      "tipo": "agua",
+      "descricao": "Vazando agua do bueiro",
+      "foto_url": null,
+      "latitude": -22.7219,
+      "longitude": -48.5715,
+      "status": "fechado",
+      "created_at": "2026-01-21T13:29:58.384Z",
+      "updated_at": "2026-01-21T13:31:18.697Z"
+    },
+    {
+      "id": 6,
+      "user_id": 2,
+      "tipo": "calcada",
+      "descricao": "Vizinho quebrou calçada",
+      "foto_url": null,
+      "latitude": -22.7252,
+      "longitude": -48.5741,
+      "status": "fechado",
+      "created_at": "2026-01-21T21:46:17.108Z",
+      "updated_at": "2026-01-21T21:47:57.136Z"
+    },
+    {
+      "id": 7,
+      "user_id": 2,
+      "tipo": "iluminacao",
+      "descricao": "Poste com problema aqui apagandop",
+      "foto_url": null,
+      "latitude": -22.7219,
+      "longitude": -48.5715,
+      "status": "pendente",
+      "created_at": "2026-01-21T21:54:39.902Z"
+    },
+    {
+      "id": 8,
+      "user_id": 2,
+      "tipo": "iluminacao",
+      "descricao": "Poste caido no cachorro",
+      "foto_url": null,
+      "latitude": -22.738981592718552,
+      "longitude": -48.56476306915284,
+      "status": "pendente",
+      "created_at": "2026-01-21T22:09:00.593Z"
+    },
+    {
+      "id": 9,
+      "user_id": 5,
+      "tipo": "lixo",
+      "descricao": "Lixeiro nao passou na rua aqui",
+      "foto_url": null,
+      "latitude": -22.73912012181861,
+      "longitude": -48.564720153808594,
+      "status": "em_analise",
+      "created_at": "2026-01-22T11:31:13.012Z",
+      "updated_at": "2026-01-22T11:32:01.148Z"
+    }
+  ],
+  "counters": {
+    "user": 5,
+    "ocorrencia": 9
+  }
+}

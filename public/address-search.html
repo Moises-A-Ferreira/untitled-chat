@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Busca de Endereços - Nominatim</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Estilos personalizados -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(90deg, #4b6cb7, #182848);
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            padding: 25px;
+        }
+        
+        .search-section {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 10px;
+        }
+        
+        input[type="text"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #4b6cb7;
+        }
+        
+        button {
+            padding: 12px 20px;
+            background: #4b6cb7;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        button:hover:not(:disabled) {
+            background: #3a5a9a;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .spinner {
+            width: 16px;
+            height: 16px;
+            border: 2px solid transparent;
+            border-top: 2px solid currentColor;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 10px;
+            background: #fdf2f2;
+            border-radius: 4px;
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .success-message {
+            color: #27ae60;
+            font-size: 14px;
+            margin-top: 8px;
+            padding: 10px;
+            background: #f2fdf2;
+            border-radius: 4px;
+            border-left: 3px solid #27ae60;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            font-size: 14px;
+        }
+        
+        .info-box h3 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+        
+        .info-box ul {
+            padding-left: 20px;
+        }
+        
+        .info-box li {
+            margin-bottom: 5px;
+        }
+        
+        .map-container {
+            height: 500px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .location-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+        
+        .location-info h3 {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+        
+        .coordinates {
+            font-family: monospace;
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 5px 0;
+        }
+        
+        .examples {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+        }
+        
+        .examples h3 {
+            margin-bottom: 10px;
+            color: #495057;
+        }
+        
+        .example-item {
+            padding: 8px 12px;
+            background: white;
+            margin: 5px 0;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.2s;
+            border: 1px solid #dee2e6;
+        }
+        
+        .example-item:hover {
+            background: #e9ecef;
+        }
+        
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📍 Sistema de Busca de Endereços</h1>
+            <p>Utilizando Nominatim (OpenStreetMap) para geocodificação precisa</p>
+        </div>
+        
+        <div class="main-content">
+            <div class="search-section">
+                <div class="form-group">
+                    <label for="addressInput">Buscar Endereço:</label>
+                    <div class="input-wrapper">
+                        <input 
+                            type="text" 
+                            id="addressInput" 
+                            placeholder="Ex: Rua Plinio Aristides Targa"
+                            autocomplete="off"
+                        >
+                        <button id="searchButton">
+                            <span id="buttonText">Buscar</span>
+                        </button>
+                    </div>
+                    <div id="messageArea"></div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>ℹ️ Como funciona:</h3>
+                    <ul>
+                        <li>Digite o nome completo da rua</li>
+                        <li>O sistema adiciona automaticamente "São Manuel, SP, Brasil"</li>
+                        <li>Respeita limite de 1 requisição por segundo</li>
+                        <li>User-Agent configurado conforme exigências do Nominatim</li>
+                        <li>Marcador vermelho draggable para ajuste fino</li>
+                    </ul>
+                </div>
+                
+                <div class="examples">
+                    <h3>🧪 Exemplos para teste:</h3>
+                    <div class="example-item" data-address="Rua Principal">📍 Rua Principal</div>
+                    <div class="example-item" data-address="Avenida Brasil">📍 Avenida Brasil</div>
+                    <div class="example-item" data-address="Rua Coronel">📍 Rua Coronel</div>
+                    <div class="example-item" data-address="Praça da Matriz">📍 Praça da Matriz</div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="map-container" id="map"></div>
+                
+                <div class="location-info" id="locationInfo" style="display: none;">
+                    <h3>📍 Localização Encontrada</h3>
+                    <div><strong>Endereço:</strong> <span id="fullAddress"></span></div>
+                    <div><strong>Coordenadas:</strong></div>
+                    <div class="coordinates" id="coordinates"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script>
+        // Variáveis globais
+        let map = null;
+        let marker = null;
+        let lastRequestTime = 0;
+        let searchTimeout = null;
+        
+        // Inicializar quando a página carregar
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeMap();
+            setupEventListeners();
+        });
+        
+        /**
+         * Inicializar o mapa Leaflet
+         */
+        function initializeMap() {
+            // Criar mapa centralizado em São Manuel
+            map = L.map('map').setView([-22.7311, -48.5706], 15);
+            
+            // Adicionar camada do OpenStreetMap
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+            }).addTo(map);
+            
+            console.log('Mapa inicializado em São Manuel');
+        }
+        
+        /**
+         * Configurar listeners de eventos
+         */
+        function setupEventListeners() {
+            const searchButton = document.getElementById('searchButton');
+            const addressInput = document.getElementById('addressInput');
+            const exampleItems = document.querySelectorAll('.example-item');
+            
+            // Botão de busca
+            searchButton.addEventListener('click', handleSearch);
+            
+            // Enter no input
+            addressInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            });
+            
+            // Exemplos
+            exampleItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const address = this.getAttribute('data-address');
+                    document.getElementById('addressInput').value = address;
+                    handleSearch();
+                });
+            });
+        }
+        
+        /**
+         * Função principal de busca de endereço
+         */
+        async function handleSearch() {
+            const addressInput = document.getElementById('addressInput');
+            const searchButton = document.getElementById('searchButton');
+            const buttonText = document.getElementById('buttonText');
+            const messageArea = document.getElementById('messageArea');
+            
+            const query = addressInput.value.trim();
+            
+            // Validar entrada
+            if (!query) {
+                showMessage('Por favor, digite um endereço válido', 'error');
+                return;
+            }
+            
+            // Cancelar timeout anterior
+            if (searchTimeout) {
+                clearTimeout(searchTimeout);
+            }
+            
+            // Respeitar rate limit de 1 requisição por segundo
+            const now = Date.now();
+            const timeSinceLastRequest = now - lastRequestTime;
+            
+            if (timeSinceLastRequest < 1000) {
+                const delay = 1000 - timeSinceLastRequest;
+                showMessage(`Aguardando ${Math.ceil(delay/1000)} segundo(s)...`, 'info');
+                
+                searchTimeout = setTimeout(() => {
+                    handleSearch();
+                }, delay);
+                return;
+            }
+            
+            // Atualizar interface para loading
+            searchButton.disabled = true;
+            buttonText.innerHTML = '<div class="spinner"></div> Buscando...';
+            messageArea.innerHTML = '';
+            
+            try {
+                // Formatar query com contexto automático
+                const fullQuery = `${query}, São Manuel, SP, Brasil`;
+                console.log('Buscando:', fullQuery);
+                
+                // Configurar headers conforme requisitos do Nominatim
+                const headers = {
+                    'User-Agent': 'SaoManuel-Ocorrencias-App/1.0 (moi.sm@outlook.com)',
+                    'Accept': 'application/json'
+                };
+                
+                // Fazer requisição para Nominatim API
+                const response = await fetch(
+                    `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullQuery)}&format=json&addressdetails=1&limit=1&countrycodes=BR`,
+                    { 
+                        headers,
+                        signal: AbortSignal.timeout(5000) // Timeout de 5 segundos
+                    }
+                );
+                
+                lastRequestTime = Date.now();
+                
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status} ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                if (!data || data.length === 0) {
+                    throw new Error('Endereço não encontrado. Tente ser mais específico.');
+                }
+                
+                // Processar primeiro resultado
+                const result = data[0];
+                const location = {
+                    lat: parseFloat(result.lat),
+                    lng: parseFloat(result.lon),
+                    displayName: result.display_name,
+                    address: result.address || {}
+                };
+                
+                // Atualizar mapa e interface
+                updateMap(location);
+                showLocationInfo(location);
+                showMessage(`Localização encontrada: ${location.displayName}`, 'success');
+                
+                console.log('Localização encontrada:', location);
+                
+            } catch (error) {
+                console.error('Erro na busca:', error);
+                
+                let errorMessage = 'Erro na busca: ';
+                
+                if (error.name === 'AbortError') {
+                    errorMessage += 'Tempo limite excedido. Tente novamente.';
+                } else if (error.message.includes('429')) {
+                    errorMessage += 'Muitas requisições. Aguarde um momento.';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                showMessage(errorMessage, 'error');
+            } finally {
+                // Restaurar botão
+                searchButton.disabled = false;
+                buttonText.textContent = 'Buscar';
+            }
+        }
+        
+        /**
+         * Atualizar mapa com a localização encontrada
+         */
+        function updateMap(location) {
+            // Centralizar mapa na localização
+            map.setView([location.lat, location.lng], 17);
+            
+            // Remover marcador anterior se existir
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            
+            // Criar novo marcador draggable
+            marker = L.marker([location.lat, location.lng], {
+                draggable: true
+            }).addTo(map);
+            
+            // Adicionar popup com informações
+            marker.bindPopup(`
+                <div style="font-size: 14px;">
+                    <div style="font-weight: bold; margin-bottom: 8px;">Localização Selecionada</div>
+                    <div style="margin-bottom: 5px;">
+                        <strong>Lat:</strong> ${location.lat.toFixed(6)}<br>
+                        <strong>Lng:</strong> ${location.lng.toFixed(6)}
+                    </div>
+                    <div style="font-size: 12px; color: #666;">
+                        ${location.displayName}
+                    </div>
+                </div>
+            `).openPopup();
+            
+            // Event listener para quando o marcador for movido
+            marker.on('dragend', function(e) {
+                const newPosition = marker.getLatLng();
+                const updatedLocation = {
+                    ...location,
+                    lat: newPosition.lat,
+                    lng: newPosition.lng
+                };
+                
+                showLocationInfo(updatedLocation);
+                console.log('Marcador movido para:', newPosition);
+            });
+        }
+        
+        /**
+         * Mostrar informações da localização
+         */
+        function showLocationInfo(location) {
+            const locationInfo = document.getElementById('locationInfo');
+            const fullAddress = document.getElementById('fullAddress');
+            const coordinates = document.getElementById('coordinates');
+            
+            fullAddress.textContent = location.displayName;
+            coordinates.textContent = `Lat: ${location.lat.toFixed(6)}\nLng: ${location.lng.toFixed(6)}`;
+            
+            locationInfo.style.display = 'block';
+        }
+        
+        /**
+         * Mostrar mensagem de feedback
+         */
+        function showMessage(message, type = 'info') {
+            const messageArea = document.getElementById('messageArea');
+            
+            const messageClass = type === 'error' ? 'error-message' : 
+                               type === 'success' ? 'success-message' : 'info-box';
+            
+            messageArea.innerHTML = `<div class="${messageClass}">${message}</div>`;
+            
+            // Auto-hide success messages after 5 seconds
+            if (type === 'success') {
+                setTimeout(() => {
+                    messageArea.innerHTML = '';
+                }, 5000);
+            }
+        }
+    </script>
+</body>
+</html>
