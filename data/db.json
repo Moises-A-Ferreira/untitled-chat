@@ -49,6 +49,21 @@
         "telefone": null,
         "email": "moi.sm@outlook.com"
       }
+    },
+    {
+      "id": 6,
+      "nome": "Murilo Chinato De Souza Martins",
+      "email": "37738672803@saomanuel.sp.gov.br",
+      "telefone": "37738672803",
+      "password_hash": "$2a$10$HzkuERT.omem.mo/Aq9SfOuf1OMX/GSocTB6SUI8ILTLmz3h7VWXy",
+      "role": "user",
+      "created_at": "2026-01-23T11:03:37.758Z",
+      "contato_info": {
+        "tipo": "telefone",
+        "valor": "14991372957",
+        "telefone": "14991372957",
+        "email": null
+      }
     }
   ],
   "sessions": [
@@ -183,6 +198,12 @@
       "user_id": 5,
       "created_at": "2026-01-22T11:53:52.896Z",
       "expires_at": "2026-01-23T11:53:52.896Z"
+    },
+    {
+      "token": "fbae9e35-513b-44a0-a2ae-c20e37f33f13",
+      "user_id": 6,
+      "created_at": "2026-01-23T11:03:45.622Z",
+      "expires_at": "2026-01-24T11:03:45.622Z"
     }
   ],
   "ocorrencias": [
@@ -290,7 +311,7 @@
     }
   ],
   "counters": {
-    "user": 5,
+    "user": 6,
     "ocorrencia": 9
   }
 }
