@@ -63,7 +63,7 @@ export default function AddressSearch({
   const searchTimeout = useRef<NodeJS.Timeout | null>(null);
 
   /**
-   * Função principal de busca usando Nominatim API
+   * Função principal de busca usando sistema híbrido
    * @param query Texto da busca (nome da rua)
    */
   const searchAddress = async (query: string) => {
@@ -78,24 +78,52 @@ export default function AddressSearch({
       return;
     }
 
-    // Respeitar limite de 1 requisição por segundo
-    const now = Date.now();
-    const timeSinceLastRequest = now - lastRequestTime.current;
-    
-    if (timeSinceLastRequest < 1000) {
-      // Agendar busca para respeitar o rate limit
-      const delay = 1000 - timeSinceLastRequest;
-      searchTimeout.current = setTimeout(() => {
-        searchAddress(query);
-      }, delay);
-      return;
-    }
-
     setIsLoading(true);
     setError(null);
-    lastRequestTime.current = now;
 
     try {
+      // PRIMEIRO: Tentar sistema de geocodificação local precisa para São Manuel
+      const { findPreciseLocation } = await import('@/lib/precise-geocoding');
+      const localResult = findPreciseLocation(query);
+      
+      if (localResult.success && localResult.lat && localResult.lng) {
+        console.log('Geocodificação local precisa bem-sucedida:', localResult);
+        
+        // Criar resultado formatado
+        const result: SearchResult = {
+          lat: localResult.lat,
+          lng: localResult.lng,
+          displayName: `${localResult.address}, ${localResult.neighborhood}, São Manuel - SP`,
+          address: {
+            road: localResult.address,
+            neighbourhood: localResult.neighborhood,
+            city: localResult.city || 'São Manuel',
+            state: 'São Paulo',
+            country: 'Brasil'
+          }
+        };
+        
+        setSearchResults([result]);
+        selectLocation(result);
+        setIsLoading(false);
+        return;
+      }
+      
+      console.log('Geocodificação local não encontrou resultado, usando Nominatim...');
+
+      // SEGUNDO: Fallback para Nominatim API se não encontrou localmente
+      // Respeitar limite de 1 requisição por segundo
+      const now = Date.now();
+      const timeSinceLastRequest = now - lastRequestTime.current;
+      
+      if (timeSinceLastRequest < 1000) {
+        // Aguardar para respeitar o rate limit
+        const delay = 1000 - timeSinceLastRequest;
+        await new Promise(resolve => setTimeout(resolve, delay));
+      }
+      
+      lastRequestTime.current = Date.now();
+
       // Formatar query com contexto automático
       const fullQuery = `${query}, São Manuel, SP, Brasil`;
       
@@ -105,37 +133,121 @@ export default function AddressSearch({
         'Accept': 'application/json'
       };
 
-      // Fazer requisição para Nominatim API
-      const response = await fetch(
-        `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(fullQuery)}&format=json&addressdetails=1&limit=5&countrycodes=BR`,
-        { headers, signal: AbortSignal.timeout(5000) }
-      );
+      // SEGUNDO: Fallback para Nominatim API com viewbox de São Manuel
+      lastRequestTime.current = Date.now();
+      
+      // Viewbox para São Manuel (prioriza resultados nesta área)
+      const viewbox = '-48.6000,-22.7000,-48.5400,-22.7600';
+      
+      // Tentar múltiplas variações da query
+      const searchVariations = [
+        `${query}, São Manuel, SP, Brasil`,
+        `${query}, São Manuel, São Paulo`,
+        `${query}, São Manuel - SP`
+      ];
+      
+      let allResults: SearchResult[] = [];
+      
+      for (const searchQuery of searchVariations) {
+        try {
+          const url = new URL('https://nominatim.openstreetmap.org/search');
+          url.searchParams.append('q', searchQuery);
+          url.searchParams.append('format', 'json');
+          url.searchParams.append('addressdetails', '1');
+          url.searchParams.append('limit', '5');
+          url.searchParams.append('countrycodes', 'BR');
+          url.searchParams.append('viewbox', viewbox);
+          url.searchParams.append('bounded', '1'); // Prioriza viewbox
+          url.searchParams.append('accept-language', 'pt-BR,pt');
+          
+          const response = await fetch(url.toString(), { 
+            headers, 
+            signal: AbortSignal.timeout(5000) 
+          });
 
-      if (!response.ok) {
-        throw new Error(`Erro na API: ${response.status} ${response.statusText}`);
+          if (!response.ok) {
+            console.warn(`Erro na API para query "${searchQuery}": ${response.status}`);
+            continue;
+          }
+
+          const data = await response.json();
+
+          if (data && data.length > 0) {
+            // Filtrar resultados próximos a São Manuel
+            const localResults = data.filter((item: any) => {
+              const lat = parseFloat(item.lat);
+              const lon = parseFloat(item.lon);
+              const distance = Math.sqrt(
+                Math.pow(lat - (-22.7311), 2) + Math.pow(lon - (-48.5706), 2)
+              );
+              return distance < 0.05; // ~5km
+            });
+            
+            if (localResults.length > 0) {
+              allResults = localResults.map((item: any) => ({
+                lat: parseFloat(item.lat),
+                lng: parseFloat(item.lon),
+                displayName: item.display_name,
+                address: item.address || {}
+              }));
+              
+              console.log(`Encontrados ${allResults.length} resultados com query: "${searchQuery}"`);
+              break; // Parar na primeira query bem-sucedida
+            }
+          }
+          
+          // Aguardar 1 segundo entre requisições (rate limit)
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          
+        } catch (err) {
+          console.error(`Erro na busca com query "${searchQuery}":`, err);
+          continue;
+        }
       }
 
-      const data = await response.json();
+      if (allResults.length === 0) {
+        // Último recurso: tentar sem filtro de distância e pegar o primeiro resultado do último request
+        try {
+          const fallbackUrl = new URL('https://nominatim.openstreetmap.org/search');
+          fallbackUrl.searchParams.append('q', `${query}, São Manuel, SP, Brasil`);
+          fallbackUrl.searchParams.append('format', 'json');
+          fallbackUrl.searchParams.append('addressdetails', '1');
+          fallbackUrl.searchParams.append('limit', '1');
+          fallbackUrl.searchParams.append('countrycodes', 'BR');
 
-      if (!data || data.length === 0) {
-        setError("Endereço não encontrado. Tente ser mais específico.");
-        setSearchResults([]);
-        return;
+          const fallbackResponse = await fetch(fallbackUrl.toString(), { 
+            headers, 
+            signal: AbortSignal.timeout(5000) 
+          });
+
+          if (fallbackResponse.ok) {
+            const fallbackData = await fallbackResponse.json();
+            if (fallbackData && fallbackData.length > 0) {
+              allResults = [{
+                lat: parseFloat(fallbackData[0].lat),
+                lng: parseFloat(fallbackData[0].lon),
+                displayName: fallbackData[0].display_name,
+                address: fallbackData[0].address || {}
+              }];
+            }
+          }
+        } catch (err) {
+          console.error('Fallback Nominatim sem filtro falhou:', err);
+        }
+
+        if (allResults.length === 0) {
+          setError("Endereço não encontrado em São Manuel. Tente ser mais específico ou use outra forma de escrever.");
+          setSearchResults([]);
+          return;
+        }
       }
 
       // Processar resultados
-      const results: SearchResult[] = data.map((item: any) => ({
-        lat: parseFloat(item.lat),
-        lng: parseFloat(item.lon),
-        displayName: item.display_name,
-        address: item.address || {}
-      }));
-
-      setSearchResults(results);
+      setSearchResults(allResults);
       
       // Selecionar primeiro resultado automaticamente
-      if (results.length > 0) {
-        const firstResult = results[0];
+      if (allResults.length > 0) {
+        const firstResult = allResults[0];
         selectLocation(firstResult);
       }
 

@@ -25,28 +25,134 @@ interface GeocodingResponse {
 }
 
 /**
- * Busca coordenadas precisas usando OpenStreetMap Nominatim API
+ * Busca coordenadas precisas usando sistema híbrido (local + OpenStreetMap Nominatim API)
  * @param address Endereço completo (ex: "Rua Principal 150, São Manuel")
  * @returns Promise com coordenadas ou erro
  */
 export async function geocodeAddress(address: string): Promise<GeocodingResponse> {
   try {
-    // Adiciona contexto de São Manuel, SP para melhorar precisão
-    const fullAddress = `${address}, São Manuel, SP, Brasil`;
+    // PRIMEIRO: Tentar sistema de geocodificação local precisa para São Manuel
+    const { findPreciseLocation } = await import('./precise-geocoding');
+    const localResult = findPreciseLocation(address);
     
-    const response = await axios.get('https://nominatim.openstreetmap.org/search', {
-      params: {
-        q: fullAddress,
-        format: 'json',
-        addressdetails: 1,
-        limit: 1,
-        countrycodes: 'BR'
-      },
-      headers: {
-        'User-Agent': 'SaoManuel-Ocorrencias-App/1.0'
-      },
-      timeout: 5000 // 5 segundos timeout
-    });
+    if (localResult.success && localResult.lat && localResult.lng) {
+      console.log('Geocodificação local precisa bem-sucedida:', localResult);
+      
+      return {
+        success: true,
+        data: {
+          lat: localResult.lat,
+          lng: localResult.lng,
+          displayName: `${localResult.address}, ${localResult.neighborhood}, ${localResult.city} - SP, Brasil`,
+          address: {
+            road: localResult.address,
+            neighbourhood: localResult.neighborhood,
+            city: localResult.city || 'São Manuel',
+            state: 'São Paulo'
+          },
+          boundingbox: [
+            String(localResult.lat - 0.001),
+            String(localResult.lat + 0.001),
+            String(localResult.lng - 0.001),
+            String(localResult.lng + 0.001)
+          ]
+        }
+      };
+    }
+    
+    console.log('Geocodificação local não encontrou resultado, tentando Nominatim API...');
+    
+    // SEGUNDO: Fallback para OpenStreetMap Nominatim API com viewbox de São Manuel
+    // Coordenadas aproximadas de São Manuel: -22.7311, -48.5706
+    // Viewbox: define área prioritária de busca (left, top, right, bottom)
+    const viewbox = '-48.6000,-22.7000,-48.5400,-22.7600'; // Área de São Manuel
+    
+    // Tentar múltiplas variações da busca
+    const searchQueries = [
+      `${address}, São Manuel, SP, Brasil`,
+      `${address}, São Manuel, São Paulo, Brasil`,
+      `${address}, São Manuel - SP`,
+      address // busca simples como último recurso
+    ];
+    
+    let bestResult = null;
+    
+    for (const query of searchQueries) {
+      try {
+        console.log(`Tentando Nominatim com query: "${query}"`);
+        
+        const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+          params: {
+            q: query,
+            format: 'json',
+            addressdetails: 1,
+            limit: 5,
+            countrycodes: 'BR',
+            viewbox: viewbox,
+            bounded: 1, // Prioriza resultados dentro do viewbox
+            'accept-language': 'pt-BR,pt'
+          },
+          headers: {
+            'User-Agent': 'SaoManuel-Ocorrencias-App/1.0 (contato@saomanuel.sp.gov.br)'
+          },
+          timeout: 5000
+        });
+        
+        if (response.data && response.data.length > 0) {
+          // Filtrar resultados que estão próximos de São Manuel
+          const resultsInSaoManuel = response.data.filter((item: any) => {
+            const lat = parseFloat(item.lat);
+            const lon = parseFloat(item.lon);
+            // Verificar se está dentro de ~5km do centro de São Manuel
+            const distance = Math.sqrt(
+              Math.pow(lat - (-22.7311), 2) + Math.pow(lon - (-48.5706), 2)
+            );
+            return distance < 0.05; // ~5km em graus
+          });
+          
+          if (resultsInSaoManuel.length > 0) {
+            bestResult = resultsInSaoManuel[0];
+            console.log(`Resultado encontrado com query: "${query}"`);
+            break;
+          }
+        }
+        
+        // Aguardar 1 segundo entre requisições (rate limit do Nominatim)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+      } catch (err) {
+        console.error(`Erro na tentativa com query "${query}":`, err);
+        continue;
+      }
+    }
+    
+    // Se nada no viewbox, usar primeiro resultado da última busca como último recurso
+    const response = { data: bestResult ? [bestResult] : [] };
+
+    if (!bestResult) {
+      try {
+        const fallback = await axios.get('https://nominatim.openstreetmap.org/search', {
+          params: {
+            q: `${address}, São Manuel, SP, Brasil`,
+            format: 'json',
+            addressdetails: 1,
+            limit: 1,
+            countrycodes: 'BR'
+          },
+          headers: {
+            'User-Agent': 'SaoManuel-Ocorrencias-App/1.0 (contato@saomanuel.sp.gov.br)'
+          },
+          timeout: 5000
+        });
+
+        if (fallback.data && fallback.data.length > 0) {
+          response.data = [fallback.data[0]];
+          console.log('Usando resultado fallback do Nominatim (sem viewbox)');
+        }
+      } catch (fallbackErr) {
+        console.error('Fallback Nominatim sem viewbox falhou:', fallbackErr);
+      }
+    }
 
     if (response.data && response.data.length > 0) {
       const result = response.data[0];
@@ -175,10 +281,21 @@ export async function geocodeWithCache(address: string, useCache = true): Promis
   const cacheKey = address.toLowerCase().trim();
   
   if (useCache && geocodeCache.has(cacheKey)) {
-    return {
-      success: true,
-      data: geocodeCache.get(cacheKey)!
-    };
+    const cached = geocodeCache.get(cacheKey)!;
+
+    // Evitar resultados antigos que estejam fora de São Manuel
+    const centerLat = -22.7311;
+    const centerLng = -48.5706;
+    const distance = Math.sqrt(
+      Math.pow(cached.lat - centerLat, 2) + Math.pow(cached.lng - centerLng, 2)
+    );
+
+    if (distance < 0.1) { // ~11km em graus, aceitável para área urbana
+      return { success: true, data: cached };
+    }
+
+    // Se o cache está fora da área, descarta e recalcula
+    geocodeCache.delete(cacheKey);
   }
   
   const result = await geocodeAddress(address);

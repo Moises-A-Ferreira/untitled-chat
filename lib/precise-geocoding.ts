@@ -20,8 +20,28 @@ export const saoManuelAddresses: AddressPattern[] = [
     city: "São Manuel"
   },
   
+  // Variação sem "rua"
+  { 
+    pattern: /^principal\s+(\d+)$/i, 
+    street: "Rua Principal",
+    start: { number: 1, lat: -22.7325, lng: -48.5725 },
+    end: { number: 2000, lat: -22.7295, lng: -48.5685 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
+  
   { 
     pattern: /^(avenida|av\.?)\s+brasil\s+(\d+)$/i, 
+    street: "Avenida Brasil",
+    start: { number: 1, lat: -22.7325, lng: -48.5725 },
+    end: { number: 2000, lat: -22.7295, lng: -48.5685 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
+  
+  // Variação sem "avenida"
+  { 
+    pattern: /^brasil\s+(\d+)$/i, 
     street: "Avenida Brasil",
     start: { number: 1, lat: -22.7325, lng: -48.5725 },
     end: { number: 2000, lat: -22.7295, lng: -48.5685 },
@@ -48,10 +68,30 @@ export const saoManuelAddresses: AddressPattern[] = [
     neighborhood: "Centro",
     city: "São Manuel"
   },
+  
+  // Variação sem "rua"
+  { 
+    pattern: /^coronel\s+(\d+)$/i, 
+    street: "Rua Coronel",
+    start: { number: 1, lat: -22.7330, lng: -48.5710 },
+    end: { number: 1000, lat: -22.7290, lng: -48.5670 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
 
   // Jardim São Paulo
   { 
     pattern: /^rua\s+s(ã|a)o\s+paulo\s+(\d+)$/i, 
+    street: "Rua São Paulo",
+    start: { number: 1, lat: -22.7355, lng: -48.5745 },
+    end: { number: 800, lat: -22.7325, lng: -48.5705 },
+    neighborhood: "Jardim São Paulo",
+    city: "São Manuel"
+  },
+  
+  // Variação sem "rua"
+  { 
+    pattern: /^s(ã|a)o\s+paulo\s+(\d+)$/i, 
     street: "Rua São Paulo",
     start: { number: 1, lat: -22.7355, lng: -48.5745 },
     end: { number: 800, lat: -22.7325, lng: -48.5705 },
@@ -68,10 +108,30 @@ export const saoManuelAddresses: AddressPattern[] = [
     neighborhood: "Vila Nova",
     city: "São Manuel"
   },
+  
+  // Variação sem "rua"
+  { 
+    pattern: /^vila\s+nova\s+(\d+)$/i, 
+    street: "Rua Vila Nova",
+    start: { number: 1, lat: -22.7295, lng: -48.5695 },
+    end: { number: 600, lat: -22.7265, lng: -48.5655 },
+    neighborhood: "Vila Nova",
+    city: "São Manuel"
+  },
 
   // Residencial Bela Vista
   { 
     pattern: /^rua\s+bela\s+vista\s+(\d+)$/i, 
+    street: "Rua Bela Vista",
+    start: { number: 1, lat: -22.7370, lng: -48.5755 },
+    end: { number: 600, lat: -22.7340, lng: -48.5715 },
+    neighborhood: "Residencial Bela Vista",
+    city: "São Manuel"
+  },
+  
+  // Variação sem "rua"
+  { 
+    pattern: /^bela\s+vista\s+(\d+)$/i, 
     street: "Rua Bela Vista",
     start: { number: 1, lat: -22.7370, lng: -48.5755 },
     end: { number: 600, lat: -22.7340, lng: -48.5715 },
@@ -88,6 +148,16 @@ export const saoManuelAddresses: AddressPattern[] = [
     neighborhood: "Parque das Nações",
     city: "São Manuel"
   },
+  
+  // Variação sem "rua"
+  { 
+    pattern: /^(das\s+)?na(ç|c)(õ|o)es\s+(\d+)$/i, 
+    street: "Rua das Nações",
+    start: { number: 1, lat: -22.7280, lng: -48.5680 },
+    end: { number: 500, lat: -22.7250, lng: -48.5640 },
+    neighborhood: "Parque das Nações",
+    city: "São Manuel"
+  },
 
   // Jardim América
   { 
@@ -96,6 +166,65 @@ export const saoManuelAddresses: AddressPattern[] = [
     start: { number: 1, lat: -22.7355, lng: -48.5705 },
     end: { number: 600, lat: -22.7325, lng: -48.5665 },
     neighborhood: "Jardim América",
+    city: "São Manuel"
+  },
+  
+  // Variação sem "rua"
+  { 
+    pattern: /^am(é|e)rica\s+(\d+)$/i, 
+    street: "Rua América",
+    start: { number: 1, lat: -22.7355, lng: -48.5705 },
+    end: { number: 600, lat: -22.7325, lng: -48.5665 },
+    neighborhood: "Jardim América",
+    city: "São Manuel"
+  },
+
+  // Rua Plinio Aristides Targa
+  { 
+    pattern: /^rua\s+plinio\s+aristides\s+targa\s+(\d+)$/i, 
+    street: "Rua Plinio Aristides Targa",
+    start: { number: 1, lat: -22.7500, lng: -48.5744 },
+    end: { number: 800, lat: -22.7440, lng: -48.5680 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
+  
+  // Variações sem "rua"
+  { 
+    pattern: /^plinio\s+aristides\s+targa\s+(\d+)$/i, 
+    street: "Rua Plinio Aristides Targa",
+    start: { number: 1, lat: -22.7500, lng: -48.5744 },
+    end: { number: 800, lat: -22.7440, lng: -48.5680 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
+  
+  { 
+    pattern: /^plinio\s+targa\s+(\d+)$/i, 
+    street: "Rua Plinio Aristides Targa",
+    start: { number: 1, lat: -22.7500, lng: -48.5744 },
+    end: { number: 800, lat: -22.7440, lng: -48.5680 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
+  
+  // Variações com possíveis erros de digitação
+  { 
+    pattern: /^pl[ií]nio\s+aristides\s+targa\s+(\d+)$/i, 
+    street: "Rua Plinio Aristides Targa",
+    start: { number: 1, lat: -22.7500, lng: -48.5744 },
+    end: { number: 800, lat: -22.7440, lng: -48.5680 },
+    neighborhood: "Centro",
+    city: "São Manuel"
+  },
+  
+  // Erro comum: "Artistides" (com "ti")
+  { 
+    pattern: /^pl[ií]nio\s+artistides\s+targa\s+(\d+)$/i, 
+    street: "Rua Plinio Aristides Targa",
+    start: { number: 1, lat: -22.7500, lng: -48.5744 },
+    end: { number: 800, lat: -22.7440, lng: -48.5680 },
+    neighborhood: "Centro",
     city: "São Manuel"
   },
 
@@ -135,41 +264,53 @@ export const saoManuelAddresses: AddressPattern[] = [
 
 /**
  * Encontra endereço e calcula coordenadas precisas
- * @param input Texto do endereço (ex: "Rua Principal 150")
+ * @param input Texto do endereço (ex: "Rua Principal 150" ou "Principal 150" ou "Principal, 150")
  * @returns Objeto com coordenadas ou null se não encontrado
  */
 export function findPreciseLocation(input: string) {
-  const normalizedInput = input.toLowerCase().trim();
+  // Normalizar input: remover vírgulas extras, normalizar espaços
+  const normalizedInput = input
+    .toLowerCase()
+    .trim()
+    .replace(/,/g, ' ') // Remove vírgulas
+    .replace(/\s+/g, ' '); // Normaliza espaços múltiplos
+  
+  console.log('Procurando localização para:', normalizedInput);
   
   for (const addressPattern of saoManuelAddresses) {
     const match = normalizedInput.match(addressPattern.pattern);
     
     if (match) {
+      console.log('Pattern match encontrado:', addressPattern.street, match);
+      
       // Se tem número (endereço com numeração)
       if (match.length >= 2 && !isNaN(parseInt(match[match.length - 1]))) {
         const houseNumber = parseInt(match[match.length - 1]);
         
-        // Verificar se o número está dentro do range
-        if (houseNumber >= addressPattern.start.number && houseNumber <= addressPattern.end.number) {
-          // Interpolação linear precisa
-          const totalRange = addressPattern.end.number - addressPattern.start.number;
-          const positionRatio = (houseNumber - addressPattern.start.number) / totalRange;
-          
-          const lat = addressPattern.start.lat + 
-                     (addressPattern.end.lat - addressPattern.start.lat) * positionRatio;
-          const lng = addressPattern.start.lng + 
-                     (addressPattern.end.lng - addressPattern.start.lng) * positionRatio;
-          
-          return {
-            success: true,
-            lat: parseFloat(lat.toFixed(6)),
-            lng: parseFloat(lng.toFixed(6)),
-            address: `${addressPattern.street}, ${houseNumber}`,
-            neighborhood: addressPattern.neighborhood,
-            city: addressPattern.city,
-            precision: "high", // Alta precisão por interpolação
-            method: "interpolation"
-          };
+        // Verificar se tem start e end definidos
+        if (addressPattern.start && addressPattern.end) {
+          // Verificar se o número está dentro do range
+          if (houseNumber >= addressPattern.start.number && houseNumber <= addressPattern.end.number) {
+            // Interpolação linear precisa
+            const totalRange = addressPattern.end.number - addressPattern.start.number;
+            const positionRatio = (houseNumber - addressPattern.start.number) / totalRange;
+            
+            const lat = addressPattern.start.lat + 
+                       (addressPattern.end.lat - addressPattern.start.lat) * positionRatio;
+            const lng = addressPattern.start.lng + 
+                       (addressPattern.end.lng - addressPattern.start.lng) * positionRatio;
+            
+            return {
+              success: true,
+              lat: parseFloat(lat.toFixed(6)),
+              lng: parseFloat(lng.toFixed(6)),
+              address: `${addressPattern.street}, ${houseNumber}`,
+              neighborhood: addressPattern.neighborhood,
+              city: addressPattern.city,
+              precision: "high", // Alta precisão por interpolação
+              method: "interpolation"
+            };
+          }
         }
       }
       // Se é ponto fixo (sem número)
@@ -188,10 +329,14 @@ export function findPreciseLocation(input: string) {
     }
   }
   
+  console.log('Nenhum pattern correspondente encontrado no banco local');
+  
+  // Não encontrou no banco local, retorna com fallback sugerindo API externa
   return {
     success: false,
-    error: "Endereço não encontrado no banco de dados",
-    precision: "low"
+    error: "Endereço não encontrado no banco de dados local. Será feita busca na API externa (OpenStreetMap).",
+    precision: "low",
+    needsFallback: true
   };
 }
 
