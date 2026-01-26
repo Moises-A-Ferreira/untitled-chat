@@ -81,7 +81,11 @@ class RateLimiter {
     };
   }
 
-  reset(key: string) {
+  reset(key?: string) {
+    if (!key) {
+      this.store.clear();
+      return;
+    }
     this.store.delete(key);
   }
 

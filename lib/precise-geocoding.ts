@@ -289,41 +289,51 @@ export function findPreciseLocation(input: string) {
         
         // Verificar se tem start e end definidos
         if (addressPattern.start && addressPattern.end) {
-          // Verificar se o número está dentro do range
-          if (houseNumber >= addressPattern.start.number && houseNumber <= addressPattern.end.number) {
-            // Interpolação linear precisa
-            const totalRange = addressPattern.end.number - addressPattern.start.number;
-            const positionRatio = (houseNumber - addressPattern.start.number) / totalRange;
-            
-            const lat = addressPattern.start.lat + 
-                       (addressPattern.end.lat - addressPattern.start.lat) * positionRatio;
-            const lng = addressPattern.start.lng + 
-                       (addressPattern.end.lng - addressPattern.start.lng) * positionRatio;
-            
-            return {
-              success: true,
-              lat: parseFloat(lat.toFixed(6)),
-              lng: parseFloat(lng.toFixed(6)),
-              address: `${addressPattern.street}, ${houseNumber}`,
-              neighborhood: addressPattern.neighborhood,
-              city: addressPattern.city,
-              precision: "high", // Alta precisão por interpolação
-              method: "interpolation"
-            };
-          }
+          const totalRange = addressPattern.end.number - addressPattern.start.number;
+          const clampedNumber = Math.min(
+            Math.max(houseNumber, addressPattern.start.number),
+            addressPattern.end.number
+          );
+          const positionRatio = (clampedNumber - addressPattern.start.number) / totalRange;
+
+          const lat = addressPattern.start.lat + 
+                     (addressPattern.end.lat - addressPattern.start.lat) * positionRatio;
+          const lng = addressPattern.start.lng + 
+                     (addressPattern.end.lng - addressPattern.start.lng) * positionRatio;
+
+          const inRange = houseNumber >= addressPattern.start.number && houseNumber <= addressPattern.end.number;
+          const precision = inRange ? "high" : "medium";
+          const method = inRange ? "interpolation" : "clamped_range";
+
+          return {
+            success: true,
+            found: true,
+            lat: parseFloat(lat.toFixed(6)),
+            lng: parseFloat(lng.toFixed(6)),
+            coordinates: { lat: parseFloat(lat.toFixed(6)), lng: parseFloat(lng.toFixed(6)) },
+            address: `${addressPattern.street}, ${houseNumber}`,
+            neighborhood: addressPattern.neighborhood,
+            city: addressPattern.city,
+            precision,
+            method,
+            needsFallback: false
+          };
         }
       }
       // Se é ponto fixo (sem número)
       else if (addressPattern.fixed) {
         return {
           success: true,
+          found: true,
           lat: addressPattern.fixed.lat,
           lng: addressPattern.fixed.lng,
+          coordinates: { lat: addressPattern.fixed.lat, lng: addressPattern.fixed.lng },
           address: addressPattern.street,
           neighborhood: addressPattern.neighborhood,
           city: addressPattern.city,
           precision: "medium", // Média precisão (local conhecido)
-          method: "fixed_point"
+          method: "fixed_point",
+          needsFallback: false
         };
       }
     }
@@ -334,6 +344,10 @@ export function findPreciseLocation(input: string) {
   // Não encontrou no banco local, retorna com fallback sugerindo API externa
   return {
     success: false,
+    found: false,
+    lat: undefined,
+    lng: undefined,
+    coordinates: undefined,
     error: "Endereço não encontrado no banco de dados local. Será feita busca na API externa (OpenStreetMap).",
     precision: "low",
     needsFallback: true
