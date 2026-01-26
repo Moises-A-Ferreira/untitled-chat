@@ -4,11 +4,8 @@ import React from "react"
 
 import { useState, useEffect, useRef } from "react";
 import LocationSelector from "@/components/DynamicLocationSelector";
-<<<<<<< HEAD
 import { SmartAssistant } from "@/components/SmartAssistant";
 import { ProactiveAddressSearch } from "@/components/ProactiveAddressSearch";
-=======
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -61,11 +58,8 @@ export default function RegistrarPage() {
     address?: string;
     neighborhood?: string;
   } | null>(null);
-<<<<<<< HEAD
   const [enderecoManual, setEnderecoManual] = useState("");
   const [pontoReferencia, setPontoReferencia] = useState("");
-=======
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState("");
@@ -140,14 +134,9 @@ export default function RegistrarPage() {
           descricao,
           latitude: selectedLocation?.latitude,
           longitude: selectedLocation?.longitude,
-<<<<<<< HEAD
           endereco: selectedLocation?.address || enderecoManual,
           bairro: selectedLocation?.neighborhood,
           ponto_referencia: pontoReferencia
-=======
-          endereco: selectedLocation?.address,
-          bairro: selectedLocation?.neighborhood
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
         }),
       });
 
@@ -287,11 +276,8 @@ export default function RegistrarPage() {
                 setFoto(null);
                 setFotoFile(null);
                 setSelectedLocation(null);
-<<<<<<< HEAD
                 setEnderecoManual("");
                 setPontoReferencia("");
-=======
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
               }}
             >
               <div className="flex items-center gap-3">
@@ -454,7 +440,6 @@ export default function RegistrarPage() {
             </Select>
           </div>
 
-<<<<<<< HEAD
           {/* Enhanced Descrição e Ponto de Referência */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-300 group">
@@ -506,32 +491,6 @@ export default function RegistrarPage() {
               />
               <p className="text-xs text-gray-400 mt-2 ml-1">Importante para equipes de campo encontrarem o local</p>
             </div>
-=======
-          {/* Enhanced Descrição */}
-          <div className="bg-white/60 backdrop-blur-xl rounded-2xl p-6 border border-white/50 shadow-xl hover:shadow-2xl transition-all duration-300 group">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-indigo-100 rounded-xl flex items-center justify-center group-hover:bg-indigo-200 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-indigo-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M12 20h9" />
-                  <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                </svg>
-              </div>
-              <div>
-                <Label htmlFor="descricao" className="text-lg font-semibold text-gray-800">
-                  Descrição detalhada
-                </Label>
-                <p className="text-sm text-gray-500">Conte mais sobre o problema (opcional)</p>
-              </div>
-            </div>
-            <Textarea
-              id="descricao"
-              placeholder="Descreva o problema com mais detalhes... Por exemplo: tamanho do buraco, horário que percebeu, frequência, etc."
-              value={descricao}
-              onChange={(e) => setDescricao(e.target.value)}
-              className="min-h-32 text-base resize-none bg-white/80 border-2 border-gray-200/50 hover:border-indigo-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-200/30 transition-all duration-300 rounded-xl p-4"
-            />
-            <p className="text-xs text-gray-400 mt-2 ml-1">Dicas: mencione tamanho, local exato, horário e qualquer informação relevante</p>
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
           </div>
 
           {/* Enhanced Foto */}
@@ -612,7 +571,6 @@ export default function RegistrarPage() {
               </div>
             </div>
             
-<<<<<<< HEAD
             {/* Campo de busca proativa de endereços */}
             <div className="mb-4">
               <Label htmlFor="endereco" className="text-base font-medium text-gray-700 mb-2 block">
@@ -641,8 +599,6 @@ export default function RegistrarPage() {
               <p className="text-xs text-gray-500 mt-2">Sistema integrado ao OpenStreetMap para sugestões precisas</p>
             </div>
             
-=======
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
             <div className="rounded-xl overflow-hidden border-2 border-gray-200/30 shadow-inner bg-white/50">
               <LocationSelector 
                 onLocationSelect={setSelectedLocation}
@@ -732,7 +688,6 @@ export default function RegistrarPage() {
             </p>
           </div>
         </form>
-<<<<<<< HEAD
         
         {/* Assistente Inteligente Proativo */}
         <SmartAssistant
@@ -759,8 +714,6 @@ export default function RegistrarPage() {
             console.log("Sugestão do assistente:", suggestion);
           }}
         />
-=======
->>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
       </section>
     </main>
   );
