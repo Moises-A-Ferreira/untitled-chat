@@ -1,22 +1,10 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { findValidSession, findUserById } from "@/lib/db/file-db";
+import { requireAuth } from "@/lib/auth";
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session_token")?.value;
-
-  if (!token) {
-    return NextResponse.json({ user: null }, { status: 200 });
-  }
-
   try {
-    const session = findValidSession(token);
-    if (!session) {
-      return NextResponse.json({ user: null }, { status: 200 });
-    }
-
-    const user = findUserById(session.user_id);
+    // allowUnauthenticated: retorna { user: null } sem 401
+    const { user } = await requireAuth({ allowUnauthenticated: true });
 
     if (!user) {
       return NextResponse.json({ user: null }, { status: 200 });

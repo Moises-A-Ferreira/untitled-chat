@@ -1,27 +1,14 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { findValidSession, listUserOcorrencias } from "@/lib/db/file-db";
+import { listUserOcorrencias } from "@/lib/db/file-db";
+import { ensureUserAccess, requireAuth } from "@/lib/auth";
 
-export async function GET(request: Request, { params }: { params: { userId: string } }) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session_token")?.value;
+// Em Next 16+, params de rotas dinâmicas é assíncrono
+export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
+  const { user, response } = await requireAuth();
+  if (response || !user) return response ?? NextResponse.json({ error: "Não autenticado." }, { status: 401 });
 
-  if (!token) {
-    return NextResponse.json(
-      { error: "Não autenticado." },
-      { status: 401 }
-    );
-  }
-
-  const session = findValidSession(token);
-  if (!session) {
-    return NextResponse.json(
-      { error: "Sessão inválida ou expirada." },
-      { status: 401 }
-    );
-  }
-
-  const userId = parseInt(params.userId);
+  const { userId: userIdParam } = await params;
+  const userId = parseInt(userIdParam);
   if (isNaN(userId)) {
     return NextResponse.json(
       { error: "ID de usuário inválido." },
@@ -29,15 +16,8 @@ export async function GET(request: Request, { params }: { params: { userId: stri
     );
   }
 
-  // Check if user is accessing their own data or is admin
-  if (session.user_id !== userId) {
-    // Check if user is admin
-    // For now, only allow users to access their own data
-    return NextResponse.json(
-      { error: "Acesso negado." },
-      { status: 403 }
-    );
-  }
+  const accessError = ensureUserAccess(userId, user);
+  if (accessError) return accessError;
 
   try {
     const ocorrencias = listUserOcorrencias(userId);

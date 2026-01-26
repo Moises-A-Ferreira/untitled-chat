@@ -1,7 +1,31 @@
 import { NextResponse } from "next/server";
 import { geocodeWithCache, reverseGeocode } from "@/lib/geocoding-api";
+import { 
+  getClientIp, 
+  createRateLimitKey, 
+  checkRateLimit,
+  RATE_LIMITS 
+} from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
+  // Rate limiting: máximo 20 requisições por minuto por IP
+  try {
+    const ip = getClientIp(request);
+    const key = createRateLimitKey(RATE_LIMITS.GEOCODE.key, ip);
+    checkRateLimit(key, RATE_LIMITS.GEOCODE.limit, RATE_LIMITS.GEOCODE.window);
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: "Limite de requisições de geocodificação excedido. Tente novamente em " + Math.ceil(error.resetIn / 1000) + " segundos." },
+      { 
+        status: 429,
+        headers: {
+          'Retry-After': error.retryAfter?.toString() || '60',
+          'X-RateLimit-Reset': new Date(Date.now() + (error.resetIn || 0)).toISOString(),
+        }
+      }
+    );
+  }
+
   try {
     const body = await request.json();
     const { address, lat, lng, type } = body;
@@ -30,6 +54,24 @@ export async function POST(request: Request) {
 }
 
 export async function GET(request: Request) {
+  // Rate limiting: máximo 20 requisições por minuto por IP
+  try {
+    const ip = getClientIp(request);
+    const key = createRateLimitKey(RATE_LIMITS.GEOCODE.key, ip);
+    checkRateLimit(key, RATE_LIMITS.GEOCODE.limit, RATE_LIMITS.GEOCODE.window);
+  } catch (error: any) {
+    return NextResponse.json(
+      { success: false, error: "Limite de requisições de geocodificação excedido. Tente novamente em " + Math.ceil(error.resetIn / 1000) + " segundos." },
+      { 
+        status: 429,
+        headers: {
+          'Retry-After': error.retryAfter?.toString() || '60',
+          'X-RateLimit-Reset': new Date(Date.now() + (error.resetIn || 0)).toISOString(),
+        }
+      }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const address = searchParams.get("address");
   const lat = searchParams.get("lat");

@@ -206,16 +206,46 @@
       "expires_at": "2026-01-24T11:03:45.622Z"
     },
     {
-      "token": "645c1d5a-2bb0-4f2a-bc2e-74a2127707d0",
-      "user_id": 5,
-      "created_at": "2026-01-26T13:04:35.591Z",
-      "expires_at": "2026-01-27T13:04:35.591Z"
+      "token": "72a15b14-f881-46e1-9ea3-c95f8bffa76a",
+      "user_id": 6,
+      "created_at": "2026-01-26T12:37:01.066Z",
+      "expires_at": "2026-01-27T12:37:01.066Z"
     },
     {
-      "token": "b5f9ddfc-91a6-4b70-827d-13427a34e57f",
-      "user_id": 5,
-      "created_at": "2026-01-26T14:12:22.010Z",
-      "expires_at": "2026-01-27T14:12:22.010Z"
+      "token": "a11e0519-6e46-4ba9-9e96-bd2ff3304b02",
+      "user_id": 6,
+      "created_at": "2026-01-26T12:38:18.289Z",
+      "expires_at": "2026-01-27T12:38:18.289Z"
+    },
+    {
+      "token": "e1d00b37-dec5-48f4-ba89-797a77305825",
+      "user_id": 6,
+      "created_at": "2026-01-26T12:38:26.466Z",
+      "expires_at": "2026-01-27T12:38:26.466Z"
+    },
+    {
+      "token": "198425e1-fe48-44e1-835e-7d0f70e1443d",
+      "user_id": 6,
+      "created_at": "2026-01-26T12:42:38.215Z",
+      "expires_at": "2026-01-27T12:42:38.215Z"
+    },
+    {
+      "token": "c0d37006-064a-46e5-9028-fb4132d308a2",
+      "user_id": 6,
+      "created_at": "2026-01-26T12:43:51.210Z",
+      "expires_at": "2026-01-27T12:43:51.210Z"
+    },
+    {
+      "token": "374ccb5a-7af7-4ad6-96e8-b00be26aab38",
+      "user_id": 6,
+      "created_at": "2026-01-26T12:44:11.814Z",
+      "expires_at": "2026-01-27T12:44:11.814Z"
+    },
+    {
+      "token": "bebdc289-3189-4d5c-849f-fdb717c77f46",
+      "user_id": 6,
+      "created_at": "2026-01-26T13:03:02.873Z",
+      "expires_at": "2026-01-27T13:03:02.873Z"
     }
   ],
   "ocorrencias": [
@@ -323,18 +353,29 @@
     },
     {
       "id": 10,
-      "user_id": 5,
-      "tipo": "calcada",
-      "descricao": "A calçada do vizinho ta caindo aos pedações",
+      "user_id": 6,
+      "tipo": "buraco",
+      "descricao": "Buraco na frente de casa",
       "foto_url": null,
-      "latitude": -22.7392633,
-      "longitude": -48.5644104,
+      "latitude": -22.744977795286996,
+      "longitude": -48.56973052024842,
       "status": "pendente",
-      "created_at": "2026-01-26T14:13:09.342Z"
+      "created_at": "2026-01-26T12:37:48.744Z"
+    },
+    {
+      "id": 11,
+      "user_id": 6,
+      "tipo": "buraco",
+      "descricao": "Rua de casa",
+      "foto_url": null,
+      "latitude": -22.7403139,
+      "longitude": -48.568574,
+      "status": "pendente",
+      "created_at": "2026-01-26T12:43:33.069Z"
     }
   ],
   "counters": {
     "user": 6,
-    "ocorrencia": 10
+    "ocorrencia": 11
   }
 }

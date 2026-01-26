@@ -156,12 +156,27 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
 
     if (response.data && response.data.length > 0) {
       const result = response.data[0];
+      const lat = parseFloat(result.lat);
+      const lng = parseFloat(result.lon);
+
+      const isValidCoord = Number.isFinite(lat) && Number.isFinite(lng);
+      const distanceFromCenter = Math.sqrt(
+        Math.pow(lat - (-22.7311), 2) + Math.pow(lng - (-48.5706), 2)
+      );
+      const withinSaoManuel = distanceFromCenter < 0.05; // ~5km
+
+      if (!isValidCoord || !withinSaoManuel) {
+        return {
+          success: false,
+          error: 'Não foi possível geocodificar o endereço (coordenadas inválidas ou fora de São Manuel).'
+        };
+      }
       
       return {
         success: true,
         data: {
-          lat: parseFloat(result.lat),
-          lng: parseFloat(result.lon),
+          lat,
+          lng,
           displayName: result.display_name,
           address: result.address || {},
           boundingbox: result.boundingbox
@@ -170,7 +185,7 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
     } else {
       return {
         success: false,
-        error: 'Endereço não encontrado'
+        error: 'Não foi possível geocodificar o endereço (nenhum resultado encontrado).'
       };
     }
   } catch (error: any) {
@@ -185,7 +200,7 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
     
     return {
       success: false,
-      error: 'Erro na geocodificação: ' + (error.message || 'Falha desconhecida')
+      error: 'Erro ao buscar coordenadas: ' + (error.message || 'Falha desconhecida')
     };
   }
 }
