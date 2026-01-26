@@ -1,6 +1,6 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { createOcorrencia, findValidSession } from "@/lib/db/file-db";
+import { createOcorrencia } from "@/lib/db/file-db";
+import { requireAuth } from "@/lib/auth";
 import { 
   createRateLimitKey, 
   checkRateLimit,
@@ -8,24 +8,9 @@ import {
 } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session_token")?.value;
-
-  if (!token) {
-    return NextResponse.json(
-      { error: "Não autenticado." },
-      { status: 401 }
-    );
-  }
-
-  const session = findValidSession(token);
-
-  if (!session) {
-    return NextResponse.json(
-      { error: "Sessão inválida ou expirada." },
-      { status: 401 }
-    );
-  }
+  // Autenticação centralizada
+  const { session, response } = await requireAuth();
+  if (response || !session) return response ?? NextResponse.json({ error: "Não autenticado." }, { status: 401 });
 
   // Rate limiting: máximo 10 ocorrências por usuário a cada 1 hora
   try {

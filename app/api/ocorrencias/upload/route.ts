@@ -1,27 +1,11 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { findValidSession } from "@/lib/db/file-db";
+import { requireAuth } from "@/lib/auth";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 
 export async function POST(request: Request) {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session_token")?.value;
-
-  if (!token) {
-    return NextResponse.json(
-      { error: "Não autenticado." },
-      { status: 401 }
-    );
-  }
-
-  const session = findValidSession(token);
-  if (!session) {
-    return NextResponse.json(
-      { error: "Sessão inválida ou expirada." },
-      { status: 401 }
-    );
-  }
+  const { session, response } = await requireAuth();
+  if (response || !session) return response ?? NextResponse.json({ error: "Não autenticado." }, { status: 401 });
 
   try {
     const formData = await request.formData();

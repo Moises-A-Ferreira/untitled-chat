@@ -5,7 +5,7 @@ import crypto from "crypto";
 const DATA_DIR = path.join(process.cwd(), "data");
 const FILE_PATH = path.join(DATA_DIR, "db.json");
 
-type User = {
+export type User = {
   id: number;
   nome: string;
   email: string;
@@ -15,7 +15,7 @@ type User = {
   created_at: string;
 };
 
-type Session = {
+export type Session = {
   token: string;
   user_id: number;
   created_at: string;

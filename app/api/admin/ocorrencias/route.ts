@@ -1,33 +1,10 @@
-import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
-import { findValidSession, findUserById, listOcorrenciasPendentes } from "@/lib/db/file-db";
+import { listOcorrenciasPendentes } from "@/lib/db/file-db";
+import { requireAuth } from "@/lib/auth";
 
 export async function GET() {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("session_token")?.value;
-
-  if (!token) {
-    return NextResponse.json(
-      { error: "Não autenticado." },
-      { status: 401 }
-    );
-  }
-
-  const session = findValidSession(token);
-  if (!session) {
-    return NextResponse.json(
-      { error: "Sessão inválida ou expirada." },
-      { status: 401 }
-    );
-  }
-
-  const user = findUserById(session.user_id);
-  if (!user || user.role !== "admin") {
-    return NextResponse.json(
-      { error: "Acesso negado. Apenas administradores." },
-      { status: 403 }
-    );
-  }
+  const { user, response } = await requireAuth({ requireAdmin: true });
+  if (response || !user) return response ?? NextResponse.json({ error: "Não autenticado." }, { status: 401 });
 
   try {
     const ocorrencias = listOcorrenciasPendentes();
