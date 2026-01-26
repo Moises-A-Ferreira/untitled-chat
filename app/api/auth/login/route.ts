@@ -2,10 +2,34 @@ import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { createSession, findUserByEmail } from "@/lib/db/file-db";
+import { 
+  getClientIp, 
+  createRateLimitKey, 
+  checkRateLimit,
+  RATE_LIMITS 
+} from "@/lib/rate-limit";
 
 const SESSION_TTL_HOURS = 24;
 
 export async function POST(request: Request) {
+  // Rate limiting: máximo 5 tentativas por IP a cada 15 minutos
+  try {
+    const ip = getClientIp(request);
+    const key = createRateLimitKey(RATE_LIMITS.LOGIN.key, ip);
+    checkRateLimit(key, RATE_LIMITS.LOGIN.limit, RATE_LIMITS.LOGIN.window);
+  } catch (error: any) {
+    return NextResponse.json(
+      { error: "Muitas tentativas de login. Tente novamente em 15 minutos." },
+      { 
+        status: 429,
+        headers: {
+          'Retry-After': error.retryAfter?.toString() || '900',
+          'X-RateLimit-Reset': new Date(Date.now() + (error.resetIn || 0)).toISOString(),
+        }
+      }
+    );
+  }
+
   const body = await request.json().catch(() => null);
 
   const email = body?.email?.toString().trim().toLowerCase();
