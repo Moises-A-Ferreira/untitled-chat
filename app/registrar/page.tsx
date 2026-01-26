@@ -340,7 +340,22 @@ export default function RegistrarPage() {
           </div>
           
           <div className="flex items-center gap-2">
-            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 bg-blue-50 rounded-full border border-blue-100">
+            <Link href="/meus-chamados">
+              <Button
+                variant="outline"
+                size="sm"
+                className="h-9 px-4 text-sm font-medium border-2 border-blue-200 text-blue-700 hover:bg-blue-50 hover:border-blue-400 rounded-xl transition-all duration-300"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <circle cx="12" cy="12" r="10" />
+                  <polyline points="12 6 12 12 16 14" />
+                </svg>
+                <span className="hidden sm:inline">Meus Chamados</span>
+                <span className="sm:hidden">Chamados</span>
+              </Button>
+            </Link>
+            
+            <div className="hidden md:flex items-center gap-2 px-3 py-1.5 bg-blue-50 rounded-full border border-blue-100">
               <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
               <span className="text-xs font-medium text-blue-700">Sistema Online</span>
             </div>

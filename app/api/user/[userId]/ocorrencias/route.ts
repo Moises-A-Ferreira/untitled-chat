@@ -2,11 +2,13 @@ import { NextResponse } from "next/server";
 import { listUserOcorrencias } from "@/lib/db/file-db";
 import { ensureUserAccess, requireAuth } from "@/lib/auth";
 
-export async function GET(request: Request, { params }: { params: { userId: string } }) {
+// Em Next 16+, params de rotas dinâmicas é assíncrono
+export async function GET(request: Request, { params }: { params: Promise<{ userId: string }> }) {
   const { user, response } = await requireAuth();
   if (response || !user) return response ?? NextResponse.json({ error: "Não autenticado." }, { status: 401 });
 
-  const userId = parseInt(params.userId);
+  const { userId: userIdParam } = await params;
+  const userId = parseInt(userIdParam);
   if (isNaN(userId)) {
     return NextResponse.json(
       { error: "ID de usuário inválido." },
