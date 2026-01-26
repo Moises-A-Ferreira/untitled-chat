@@ -1,4 +1,5 @@
 import axios from 'axios';
+<<<<<<< HEAD
 import { 
   normalizeText, 
   generateSearchVariations, 
@@ -7,6 +8,10 @@ import {
   findClosestMatch
 } from './address-normalizer';
 
+=======
+
+// Interface para resultados da geocodificação
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
 interface GeocodeResult {
   lat: number;
   lng: number;
@@ -19,6 +24,7 @@ interface GeocodeResult {
     city?: string;
     state?: string;
     postcode?: string;
+<<<<<<< HEAD
     country?: string;
   };
   boundingbox: [string, string, string, string];
@@ -26,10 +32,18 @@ interface GeocodeResult {
   type?: string;
 }
 
+=======
+  };
+  boundingbox: [string, string, string, string];
+}
+
+// Interface para resposta da API
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
 interface GeocodingResponse {
   success: boolean;
   data?: GeocodeResult;
   error?: string;
+<<<<<<< HEAD
   suggestions?: string[];
   metadata?: {
     totalResults: number;
@@ -37,6 +51,8 @@ interface GeocodingResponse {
     searchMethod: string;
     variationsTried: number;
   };
+=======
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
 }
 
 /**
@@ -77,6 +93,7 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
     
     console.log('Geocodificação local não encontrou resultado, tentando Nominatim API...');
     
+<<<<<<< HEAD
     // Normalizar o endereço de entrada
     const normalizedAddress = normalizeText(address);
     
@@ -105,10 +122,45 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
           },
           headers: {
             'User-Agent': 'SaoManuel-Ocorrencias-App/2.0 (melhoria de busca inteligente)'
+=======
+    // SEGUNDO: Fallback para OpenStreetMap Nominatim API com viewbox de São Manuel
+    // Coordenadas aproximadas de São Manuel: -22.7311, -48.5706
+    // Viewbox: define área prioritária de busca (left, top, right, bottom)
+    const viewbox = '-48.6000,-22.7000,-48.5400,-22.7600'; // Área de São Manuel
+    
+    // Tentar múltiplas variações da busca
+    const searchQueries = [
+      `${address}, São Manuel, SP, Brasil`,
+      `${address}, São Manuel, São Paulo, Brasil`,
+      `${address}, São Manuel - SP`,
+      address // busca simples como último recurso
+    ];
+    
+    let bestResult = null;
+    
+    for (const query of searchQueries) {
+      try {
+        console.log(`Tentando Nominatim com query: "${query}"`);
+        
+        const response = await axios.get('https://nominatim.openstreetmap.org/search', {
+          params: {
+            q: query,
+            format: 'json',
+            addressdetails: 1,
+            limit: 5,
+            countrycodes: 'BR',
+            viewbox: viewbox,
+            bounded: 1, // Prioriza resultados dentro do viewbox
+            'accept-language': 'pt-BR,pt'
+          },
+          headers: {
+            'User-Agent': 'SaoManuel-Ocorrencias-App/1.0 (contato@saomanuel.sp.gov.br)'
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
           },
           timeout: 5000
         });
         
+<<<<<<< HEAD
         if (viewboxResponse.data && viewboxResponse.data.length > 0) {
           console.log(`Encontrados ${viewboxResponse.data.length} resultados no viewbox para: ${variation}`);
           allResults = [...allResults, ...viewboxResponse.data];
@@ -185,12 +237,79 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
       const lat = parseFloat(selectedResult.lat);
       const lng = parseFloat(selectedResult.lon);
       
+=======
+        if (response.data && response.data.length > 0) {
+          // Filtrar resultados que estão próximos de São Manuel
+          const resultsInSaoManuel = response.data.filter((item: any) => {
+            const lat = parseFloat(item.lat);
+            const lon = parseFloat(item.lon);
+            // Verificar se está dentro de ~5km do centro de São Manuel
+            const distance = Math.sqrt(
+              Math.pow(lat - (-22.7311), 2) + Math.pow(lon - (-48.5706), 2)
+            );
+            return distance < 0.05; // ~5km em graus
+          });
+          
+          if (resultsInSaoManuel.length > 0) {
+            bestResult = resultsInSaoManuel[0];
+            console.log(`Resultado encontrado com query: "${query}"`);
+            break;
+          }
+        }
+        
+        // Aguardar 1 segundo entre requisições (rate limit do Nominatim)
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+      } catch (err) {
+        console.error(`Erro na tentativa com query "${query}":`, err);
+        continue;
+      }
+    }
+    
+    // Se nada no viewbox, usar primeiro resultado da última busca como último recurso
+    const response = { data: bestResult ? [bestResult] : [] };
+
+    if (!bestResult) {
+      try {
+        const fallback = await axios.get('https://nominatim.openstreetmap.org/search', {
+          params: {
+            q: `${address}, São Manuel, SP, Brasil`,
+            format: 'json',
+            addressdetails: 1,
+            limit: 1,
+            countrycodes: 'BR'
+          },
+          headers: {
+            'User-Agent': 'SaoManuel-Ocorrencias-App/1.0 (contato@saomanuel.sp.gov.br)'
+          },
+          timeout: 5000
+        });
+
+        if (fallback.data && fallback.data.length > 0) {
+          response.data = [fallback.data[0]];
+          console.log('Usando resultado fallback do Nominatim (sem viewbox)');
+        }
+      } catch (fallbackErr) {
+        console.error('Fallback Nominatim sem viewbox falhou:', fallbackErr);
+      }
+    }
+
+    if (response.data && response.data.length > 0) {
+      const result = response.data[0];
+      const lat = parseFloat(result.lat);
+      const lng = parseFloat(result.lon);
+
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
       const isValidCoord = Number.isFinite(lat) && Number.isFinite(lng);
       const distanceFromCenter = Math.sqrt(
         Math.pow(lat - (-22.7311), 2) + Math.pow(lng - (-48.5706), 2)
       );
       const withinSaoManuel = distanceFromCenter < 0.05; // ~5km
+<<<<<<< HEAD
       
+=======
+
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
       if (!isValidCoord || !withinSaoManuel) {
         return {
           success: false,
@@ -203,6 +322,7 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
         data: {
           lat,
           lng,
+<<<<<<< HEAD
           displayName: selectedResult.display_name,
           address: selectedResult.address || {},
           boundingbox: selectedResult.boundingbox,
@@ -227,6 +347,17 @@ export async function geocodeAddress(address: string): Promise<GeocodingResponse
           "Use formatos como: 'Rua Nome 123' ou 'Avenida Nome'",
           "Certifique-se de estar buscando em São Manuel"
         ]
+=======
+          displayName: result.display_name,
+          address: result.address || {},
+          boundingbox: result.boundingbox
+        }
+      };
+    } else {
+      return {
+        success: false,
+        error: 'Não foi possível geocodificar o endereço (nenhum resultado encontrado).'
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
       };
     }
   } catch (error: any) {

@@ -9,6 +9,7 @@ interface AddressPattern {
   city: string;
 }
 
+<<<<<<< HEAD
 // Função auxiliar para processar matches de endereço
 function processAddressMatch(addressPattern: AddressPattern, match: RegExpMatchArray, input: string) {
   // Se tem número (endereço com numeração)
@@ -68,6 +69,8 @@ function processAddressMatch(addressPattern: AddressPattern, match: RegExpMatchA
   return null;
 }
 
+=======
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
 export const saoManuelAddresses: AddressPattern[] = [
   // Rua Principal (Avenida Brasil) - Centro
   { 
@@ -327,10 +330,15 @@ export const saoManuelAddresses: AddressPattern[] = [
  * @returns Objeto com coordenadas ou null se não encontrado
  */
 export function findPreciseLocation(input: string) {
+<<<<<<< HEAD
   // Normalizar input: remover acentos, vírgulas, normalizar espaços
   const normalizedInput = input
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '') // Remove acentos
+=======
+  // Normalizar input: remover vírgulas extras, normalizar espaços
+  const normalizedInput = input
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
     .toLowerCase()
     .trim()
     .replace(/,/g, ' ') // Remove vírgulas
@@ -338,11 +346,15 @@ export function findPreciseLocation(input: string) {
   
   console.log('Procurando localização para:', normalizedInput);
   
+<<<<<<< HEAD
   // Primeiro tenta matching exato
+=======
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
   for (const addressPattern of saoManuelAddresses) {
     const match = normalizedInput.match(addressPattern.pattern);
     
     if (match) {
+<<<<<<< HEAD
       console.log('Pattern match exato encontrado:', addressPattern.street, match);
       return processAddressMatch(addressPattern, match, normalizedInput);
     }
@@ -434,6 +446,63 @@ export function findPreciseLocation(input: string) {
         method: "partial_match_fixed",
         needsFallback: false
       };
+=======
+      console.log('Pattern match encontrado:', addressPattern.street, match);
+      
+      // Se tem número (endereço com numeração)
+      if (match.length >= 2 && !isNaN(parseInt(match[match.length - 1]))) {
+        const houseNumber = parseInt(match[match.length - 1]);
+        
+        // Verificar se tem start e end definidos
+        if (addressPattern.start && addressPattern.end) {
+          const totalRange = addressPattern.end.number - addressPattern.start.number;
+          const clampedNumber = Math.min(
+            Math.max(houseNumber, addressPattern.start.number),
+            addressPattern.end.number
+          );
+          const positionRatio = (clampedNumber - addressPattern.start.number) / totalRange;
+
+          const lat = addressPattern.start.lat + 
+                     (addressPattern.end.lat - addressPattern.start.lat) * positionRatio;
+          const lng = addressPattern.start.lng + 
+                     (addressPattern.end.lng - addressPattern.start.lng) * positionRatio;
+
+          const inRange = houseNumber >= addressPattern.start.number && houseNumber <= addressPattern.end.number;
+          const precision = inRange ? "high" : "medium";
+          const method = inRange ? "interpolation" : "clamped_range";
+
+          return {
+            success: true,
+            found: true,
+            lat: parseFloat(lat.toFixed(6)),
+            lng: parseFloat(lng.toFixed(6)),
+            coordinates: { lat: parseFloat(lat.toFixed(6)), lng: parseFloat(lng.toFixed(6)) },
+            address: `${addressPattern.street}, ${houseNumber}`,
+            neighborhood: addressPattern.neighborhood,
+            city: addressPattern.city,
+            precision,
+            method,
+            needsFallback: false
+          };
+        }
+      }
+      // Se é ponto fixo (sem número)
+      else if (addressPattern.fixed) {
+        return {
+          success: true,
+          found: true,
+          lat: addressPattern.fixed.lat,
+          lng: addressPattern.fixed.lng,
+          coordinates: { lat: addressPattern.fixed.lat, lng: addressPattern.fixed.lng },
+          address: addressPattern.street,
+          neighborhood: addressPattern.neighborhood,
+          city: addressPattern.city,
+          precision: "medium", // Média precisão (local conhecido)
+          method: "fixed_point",
+          needsFallback: false
+        };
+      }
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
     }
   }
   
@@ -463,7 +532,11 @@ export async function hybridGeocode(address: string) {
   // Primeiro tenta sistema local preciso
   const localResult = findPreciseLocation(address);
   
+<<<<<<< HEAD
   if (localResult && localResult.success) {
+=======
+  if (localResult.success) {
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
     console.log(`Local geocoding success: ${localResult.lat}, ${localResult.lng}`);
     return localResult;
   }

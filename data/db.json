@@ -246,6 +246,7 @@
       "user_id": 6,
       "created_at": "2026-01-26T13:03:02.873Z",
       "expires_at": "2026-01-27T13:03:02.873Z"
+<<<<<<< HEAD
     },
     {
       "token": "1437346d-1b49-4617-9dd2-270312958e27",
@@ -294,6 +295,8 @@
       "user_id": 5,
       "created_at": "2026-01-26T18:35:58.170Z",
       "expires_at": "2026-01-27T18:35:58.170Z"
+=======
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
     }
   ],
   "ocorrencias": [
@@ -420,6 +423,7 @@
       "longitude": -48.568574,
       "status": "pendente",
       "created_at": "2026-01-26T12:43:33.069Z"
+<<<<<<< HEAD
     },
     {
       "id": 12,
@@ -442,10 +446,16 @@
       "longitude": -48.5761968,
       "status": "pendente",
       "created_at": "2026-01-26T18:35:48.142Z"
+=======
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
     }
   ],
   "counters": {
     "user": 6,
+<<<<<<< HEAD
     "ocorrencia": 13
+=======
+    "ocorrencia": 11
+>>>>>>> 79e73dd08ffd9c64743269f7d6553d59ecb89a7f
   }
 }
