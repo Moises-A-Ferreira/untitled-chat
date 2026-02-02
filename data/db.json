@@ -348,6 +348,30 @@
       "user_id": 5,
       "created_at": "2026-02-02T13:47:05.825Z",
       "expires_at": "2026-02-03T13:47:05.825Z"
+    },
+    {
+      "token": "9ddd37dc-5d34-48fd-a72f-2b7107163ee9",
+      "user_id": 5,
+      "created_at": "2026-02-02T16:44:11.055Z",
+      "expires_at": "2026-02-03T16:44:11.055Z"
+    },
+    {
+      "token": "625d00fc-6638-48f7-af46-8417b9b6c0c2",
+      "user_id": 5,
+      "created_at": "2026-02-02T16:48:35.753Z",
+      "expires_at": "2026-02-03T16:48:35.753Z"
+    },
+    {
+      "token": "f6c19d6c-fafa-4327-86f7-4e760a4fdbb1",
+      "user_id": 5,
+      "created_at": "2026-02-02T16:59:59.254Z",
+      "expires_at": "2026-02-03T16:59:59.254Z"
+    },
+    {
+      "token": "2d0e7387-c014-4b41-9283-5e202c8148c3",
+      "user_id": 5,
+      "created_at": "2026-02-02T17:02:43.314Z",
+      "expires_at": "2026-02-03T17:02:43.314Z"
     }
   ],
   "ocorrencias": [
@@ -427,8 +451,9 @@
       "foto_url": null,
       "latitude": -22.7219,
       "longitude": -48.5715,
-      "status": "pendente",
-      "created_at": "2026-01-21T21:54:39.902Z"
+      "status": "fechado",
+      "created_at": "2026-01-21T21:54:39.902Z",
+      "updated_at": "2026-02-02T17:01:18.084Z"
     },
     {
       "id": 8,
@@ -438,8 +463,9 @@
       "foto_url": null,
       "latitude": -22.738981592718552,
       "longitude": -48.56476306915284,
-      "status": "pendente",
-      "created_at": "2026-01-21T22:09:00.593Z"
+      "status": "fechado",
+      "created_at": "2026-01-21T22:09:00.593Z",
+      "updated_at": "2026-02-02T17:02:01.709Z"
     },
     {
       "id": 9,
@@ -449,9 +475,9 @@
       "foto_url": null,
       "latitude": -22.73912012181861,
       "longitude": -48.564720153808594,
-      "status": "em_analise",
+      "status": "fechado",
       "created_at": "2026-01-22T11:31:13.012Z",
-      "updated_at": "2026-01-22T11:32:01.148Z"
+      "updated_at": "2026-02-02T17:01:10.916Z"
     },
     {
       "id": 10,
@@ -461,8 +487,9 @@
       "foto_url": null,
       "latitude": -22.744977795286996,
       "longitude": -48.56973052024842,
-      "status": "pendente",
-      "created_at": "2026-01-26T12:37:48.744Z"
+      "status": "fechado",
+      "created_at": "2026-01-26T12:37:48.744Z",
+      "updated_at": "2026-02-02T17:02:10.401Z"
     },
     {
       "id": 11,
@@ -472,8 +499,9 @@
       "foto_url": null,
       "latitude": -22.7403139,
       "longitude": -48.568574,
-      "status": "pendente",
-      "created_at": "2026-01-26T12:43:33.069Z"
+      "status": "fechado",
+      "created_at": "2026-01-26T12:43:33.069Z",
+      "updated_at": "2026-02-02T17:02:16.719Z"
     },
     {
       "id": 12,
@@ -483,8 +511,9 @@
       "foto_url": null,
       "latitude": -22.7392633,
       "longitude": -48.5644104,
-      "status": "pendente",
-      "created_at": "2026-01-26T17:32:09.021Z"
+      "status": "fechado",
+      "created_at": "2026-01-26T17:32:09.021Z",
+      "updated_at": "2026-02-02T17:00:59.817Z"
     },
     {
       "id": 13,
@@ -494,8 +523,9 @@
       "foto_url": null,
       "latitude": -22.7309225,
       "longitude": -48.5761968,
-      "status": "pendente",
-      "created_at": "2026-01-26T18:35:48.142Z"
+      "status": "fechado",
+      "created_at": "2026-01-26T18:35:48.142Z",
+      "updated_at": "2026-02-02T17:01:29.260Z"
     },
     {
       "id": 14,
@@ -505,8 +535,9 @@
       "foto_url": null,
       "latitude": -22.7303193,
       "longitude": -48.5809623,
-      "status": "pendente",
-      "created_at": "2026-02-02T12:42:00.981Z"
+      "status": "fechado",
+      "created_at": "2026-02-02T12:42:00.981Z",
+      "updated_at": "2026-02-02T17:01:44.588Z"
     },
     {
       "id": 15,
@@ -516,8 +547,9 @@
       "foto_url": null,
       "latitude": -22.7387731,
       "longitude": -48.5626142,
-      "status": "pendente",
-      "created_at": "2026-02-02T13:29:30.684Z"
+      "status": "fechado",
+      "created_at": "2026-02-02T13:29:30.684Z",
+      "updated_at": "2026-02-02T17:01:53.726Z"
     },
     {
       "id": 16,
@@ -527,8 +559,9 @@
       "foto_url": null,
       "latitude": -22.7303828,
       "longitude": -48.578026,
-      "status": "pendente",
-      "created_at": "2026-02-02T13:47:48.086Z"
+      "status": "fechado",
+      "created_at": "2026-02-02T13:47:48.086Z",
+      "updated_at": "2026-02-02T17:01:36.957Z"
     }
   ],
   "feedbacks": [

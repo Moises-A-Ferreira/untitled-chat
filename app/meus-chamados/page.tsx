@@ -69,16 +69,6 @@ const STATUS_CONFIG: Record<
     icon: <XCircle className="h-3 w-3" />,
     variant: "destructive",
   },
-  finalizado: {
-    label: "Finalizado",
-    icon: <CheckCircle2 className="h-3 w-3" />,
-    variant: "default",
-  },
-  resolvido: {
-    label: "Resolvido",
-    icon: <CheckCircle2 className="h-3 w-3" />,
-    variant: "default",
-  },
 };
 
 type Ocorrencia = {
@@ -236,7 +226,7 @@ export default function MinhasOcorrenciasPage() {
       <header className="bg-white/80 backdrop-blur-xl border-b border-gray-200/50 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <Link href="/registrar">
+            <Link href="/">
               <Button
                 variant="ghost"
                 size="icon"
@@ -304,7 +294,7 @@ export default function MinhasOcorrenciasPage() {
             </p>
           </div>
         </div>
-              
+        
         {/* Feedback Section - Appears when user enters the app */}
         <div className="mb-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 border border-blue-100 shadow-sm">
           <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center gap-2">

@@ -135,7 +135,11 @@ export default function MinhasOcorrenciasPage() {
     <main className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="bg-primary p-4 flex items-center gap-4">
+<<<<<<< HEAD
         <Link href="/registrar">
+=======
+        <Link href="/">
+>>>>>>> fa95f88f0a2e4a3f92d155e004edb13f769df551
           <Button
             variant="ghost"
             size="icon"

@@ -45,6 +45,7 @@ db.exec(`
     created_at TEXT NOT NULL DEFAULT (datetime('now')),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
   );
+<<<<<<< HEAD
 
   CREATE TABLE IF NOT EXISTS feedbacks (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,6 +61,8 @@ db.exec(`
   CREATE INDEX IF NOT EXISTS idx_feedbacks_ocorrencia ON feedbacks(ocorrencia_id);
   CREATE INDEX IF NOT EXISTS idx_feedbacks_rating ON feedbacks(rating);
   CREATE INDEX IF NOT EXISTS idx_feedbacks_created_at ON feedbacks(created_at);
+=======
+>>>>>>> fa95f88f0a2e4a3f92d155e004edb13f769df551
 `);
 
 export { db };

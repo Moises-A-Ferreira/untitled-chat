@@ -545,11 +545,11 @@ export default function AdminDashboardPage() {
             <div className="relative group">
               <div className="absolute inset-0 bg-white/20 rounded-xl blur-lg group-hover:bg-white/30 transition-all duration-300" />
               <Image
-                src="/logo-prefeitura.svg"
+                src="/brasao.png"
                 alt="Prefeitura Municipal de São Manuel"
-                width={160}
+                width={48}
                 height={48}
-                className="h-12 w-auto relative drop-shadow-lg"
+                className="h-12 w-12 relative drop-shadow-lg"
               />
             </div>
             <div className="hidden md:flex flex-col">
@@ -751,7 +751,7 @@ export default function AdminDashboardPage() {
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
           </div>
         ) : viewMode === 'list' ? (
-          /* List View */
+          /* List View - Grouped by Status */
           filteredOcorrencias.length === 0 ? (
             <Card>
               <CardContent className="py-12 text-center">
@@ -762,111 +762,134 @@ export default function AdminDashboardPage() {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-4">
-              {filteredOcorrencias.map((ocorrencia) => {
-                const statusConfig =
-                  STATUS_CONFIG[ocorrencia.status] || STATUS_CONFIG.pendente;
+            <div className="space-y-8">
+              {/* Group occurrences by status */}
+              {['pendente', 'em_analise', 'atribuido', 'em_andamento', 'resolvido', 'fechado', 'cancelado'].map((status) => {
+                const statusOcorrencias = filteredOcorrencias.filter(o => o.status === status);
+                if (statusOcorrencias.length === 0) return null;
+                
+                const statusConfig = STATUS_CONFIG[status] || STATUS_CONFIG.pendente;
+                
                 return (
-                  <Card key={ocorrencia.id}>
-                    <CardContent className="p-0">
-                      <div className="flex flex-col lg:flex-row">
-                        {ocorrencia.foto_url && (
-                          <div className="lg:w-48 lg:shrink-0">
-                            <img
-                              src={ocorrencia.foto_url || "/placeholder.svg"}
-                              alt={
-                                TIPOS_OCORRENCIA[ocorrencia.tipo] ||
-                                ocorrencia.tipo
-                              }
-                              className="w-full h-40 lg:h-full object-cover rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none"
-                            />
-                          </div>
-                        )}
-                        <div className="flex-1 p-4">
-                          <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
-                            <div>
-                              <h3 className="font-semibold text-foreground text-lg">
-                                {TIPOS_OCORRENCIA[ocorrencia.tipo] ||
-                                  ocorrencia.tipo}
-                              </h3>
-                              <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
-                                <Calendar className="h-3.5 w-3.5" />
-                                {formatDate(ocorrencia.created_at)}
-                              </p>
-                            </div>
-                            <DropdownMenu>
-                              <DropdownMenuTrigger asChild>
-                                <Button
-                                  variant="outline"
-                                  size="sm"
-                                  className="gap-1 bg-transparent"
-                                >
-                                  <Badge
-                                    variant={statusConfig.variant}
-                                    className="gap-1"
-                                  >
-                                    {statusConfig.icon}
-                                    {statusConfig.label}
-                                  </Badge>
-                                  <ChevronDown className="h-3 w-3" />
-                                </Button>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent align="end">
-                                {STATUS_OPTIONS.map((s) => (
-                                  <DropdownMenuItem
-                                    key={s.value}
-                                    onClick={() =>
-                                      handleStatusChange(ocorrencia.id, s.value)
-                                    }
-                                    disabled={ocorrencia.status === s.value}
-                                  >
-                                    <span
-                                      className={`w-2 h-2 rounded-full ${s.color} mr-2`}
+                  <div key={status} className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <h2 className="text-xl font-bold text-foreground">
+                        {statusConfig.label}
+                      </h2>
+                      <Badge variant={statusConfig.variant} className="gap-1">
+                        {statusConfig.icon}
+                        ({statusOcorrencias.length})
+                      </Badge>
+                    </div>
+                    <div className="space-y-4">
+                      {statusOcorrencias.map((ocorrencia) => {
+                        const statusConfig =
+                          STATUS_CONFIG[ocorrencia.status] || STATUS_CONFIG.pendente;
+                        return (
+                          <Card key={ocorrencia.id}>
+                            <CardContent className="p-0">
+                              <div className="flex flex-col lg:flex-row">
+                                {ocorrencia.foto_url && (
+                                  <div className="lg:w-48 lg:shrink-0">
+                                    <img
+                                      src={ocorrencia.foto_url || "/placeholder.svg"}
+                                      alt={
+                                        TIPOS_OCORRENCIA[ocorrencia.tipo] ||
+                                        ocorrencia.tipo
+                                      }
+                                      className="w-full h-40 lg:h-full object-cover rounded-t-lg lg:rounded-l-lg lg:rounded-tr-none"
                                     />
-                                    {s.label}
-                                  </DropdownMenuItem>
-                                ))}
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
+                                  </div>
+                                )}
+                                <div className="flex-1 p-4">
+                                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 mb-3">
+                                    <div>
+                                      <h3 className="font-semibold text-foreground text-lg">
+                                        {TIPOS_OCORRENCIA[ocorrencia.tipo] ||
+                                          ocorrencia.tipo}
+                                      </h3>
+                                      <p className="text-sm text-muted-foreground flex items-center gap-1 mt-1">
+                                        <Calendar className="h-3.5 w-3.5" />
+                                        {formatDate(ocorrencia.created_at)}
+                                      </p>
+                                    </div>
+                                    <DropdownMenu>
+                                      <DropdownMenuTrigger asChild>
+                                        <Button
+                                          variant="outline"
+                                          size="sm"
+                                          className="gap-1 bg-transparent"
+                                        >
+                                          <Badge
+                                            variant={statusConfig.variant}
+                                            className="gap-1"
+                                          >
+                                            {statusConfig.icon}
+                                            {statusConfig.label}
+                                          </Badge>
+                                          <ChevronDown className="h-3 w-3" />
+                                        </Button>
+                                      </DropdownMenuTrigger>
+                                      <DropdownMenuContent align="end">
+                                        {STATUS_OPTIONS.map((s) => (
+                                          <DropdownMenuItem
+                                            key={s.value}
+                                            onClick={() =>
+                                              handleStatusChange(ocorrencia.id, s.value)
+                                            }
+                                            disabled={ocorrencia.status === s.value}
+                                          >
+                                            <span
+                                              className={`w-2 h-2 rounded-full ${s.color} mr-2`}
+                                            />
+                                            {s.label}
+                                          </DropdownMenuItem>
+                                        ))}
+                                      </DropdownMenuContent>
+                                    </DropdownMenu>
+                                  </div>
 
-                          {ocorrencia.descricao && (
-                            <p className="text-sm text-muted-foreground mb-3">
-                              {ocorrencia.descricao}
-                            </p>
-                          )}
+                                  {ocorrencia.descricao && (
+                                    <p className="text-sm text-muted-foreground mb-3">
+                                      {ocorrencia.descricao}
+                                    </p>
+                                  )}
 
-                          <div className="flex flex-wrap gap-4 text-sm">
-                            {ocorrencia.profiles && (
-                              <div className="flex items-center gap-2 text-muted-foreground">
-                                <User className="h-4 w-4" />
-                                <span>
-                                  {ocorrencia.profiles.nome_completo ||
-                                    ocorrencia.profiles.email}
-                                </span>
+                                  <div className="flex flex-wrap gap-4 text-sm">
+                                    {ocorrencia.profiles && (
+                                      <div className="flex items-center gap-2 text-muted-foreground">
+                                        <User className="h-4 w-4" />
+                                        <span>
+                                          {ocorrencia.profiles.nome_completo ||
+                                            ocorrencia.profiles.email}
+                                        </span>
+                                      </div>
+                                    )}
+                                    {ocorrencia.latitude && ocorrencia.longitude && (
+                                      <Button
+                                        variant="link"
+                                        size="sm"
+                                        className="h-auto p-0 text-primary"
+                                        onClick={() =>
+                                          openMaps(
+                                            ocorrencia.latitude!,
+                                            ocorrencia.longitude!
+                                          )
+                                        }
+                                      >
+                                        <MapPin className="h-4 w-4 mr-1" />
+                                        Ver no mapa
+                                      </Button>
+                                    )}
+                                  </div>
+                                </div>
                               </div>
-                            )}
-                            {ocorrencia.latitude && ocorrencia.longitude && (
-                              <Button
-                                variant="link"
-                                size="sm"
-                                className="h-auto p-0 text-primary"
-                                onClick={() =>
-                                  openMaps(
-                                    ocorrencia.latitude!,
-                                    ocorrencia.longitude!
-                                  )
-                                }
-                              >
-                                <MapPin className="h-4 w-4 mr-1" />
-                                Ver no mapa
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
+                            </CardContent>
+                          </Card>
+                        );
+                      })}
+                    </div>
+                  </div>
                 );
               })}
             </div>

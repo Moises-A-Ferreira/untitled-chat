@@ -65,8 +65,8 @@ function ensureFile(): void {
       users: [],
       sessions: [],
       ocorrencias: [],
-      counters: { user: 0, ocorrencia: 0, feedback: 0 },
       feedbacks: [],
+      counters: { user: 0, ocorrencia: 0, feedback: 0 },
     };
     fs.writeFileSync(FILE_PATH, JSON.stringify(initial, null, 2), "utf8");
   }
@@ -316,5 +316,3 @@ export function calculateFeedbackStats(): {
     satisfactionRate: Math.round(satisfactionRate * 100) / 100 // Arredonda para 2 casas decimais
   };
 }
-
-

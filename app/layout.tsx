@@ -11,6 +11,9 @@ export const metadata: Metadata = {
   description:
     "Aplicativo para registro de ocorrências e solicitações de serviços públicos da Prefeitura Municipal de São Manuel",
   generator: "v0.app",
+  icons: {
+    icon: "/brasao.png",
+  },
 };
 
 export const viewport: Viewport = {
